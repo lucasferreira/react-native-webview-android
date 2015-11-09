@@ -25,10 +25,12 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @Override
     public RNWebView createViewInstance(ThemedReactContext context) {
+        RNWebView rnwv = new RNWebView(context);
+
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
 
-        return new RNWebView(context);
+        return rnwv;
     }
 
     @ReactProp(name = "disableCookies", defaultBoolean = false)
