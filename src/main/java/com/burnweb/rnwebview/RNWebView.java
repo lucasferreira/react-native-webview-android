@@ -36,6 +36,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     }
 
     private final EventDispatcher mEventDispatcher;
+    private String charset = "UTF-8";
 
     public RNWebView(ReactContext reactContext) {
         super(reactContext);
@@ -58,6 +59,14 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
         this.setWebChromeClient(new WebChromeClient());
         this.setWebViewClient(new EventWebClient());
+    }
+
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    public String getCharset() {
+        return this.charset;
     }
 
     public GeoWebChromeClient getGeoClient() {
