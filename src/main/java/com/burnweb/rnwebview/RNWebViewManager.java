@@ -3,6 +3,7 @@ package com.burnweb.rnwebview;
 import javax.annotation.Nullable;
 
 import android.webkit.WebChromeClient;
+import android.webkit.CookieManager;
 
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ViewGroupManager;
@@ -24,6 +25,8 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @Override
     public RNWebView createViewInstance(ThemedReactContext context) {
+        CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
+
         return new RNWebView(context);
     }
 
