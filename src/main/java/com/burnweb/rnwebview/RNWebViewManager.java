@@ -56,7 +56,7 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @ReactProp(name = "htmlCharset")
     public void setUrl(RNWebView view, @Nullable String htmlCharset) {
-        if(htmlCharset != null) view.setCharset(htmlCharset)
+        if(htmlCharset != null) view.setCharset(htmlCharset);
     }
 
     @ReactProp(name = "html")
