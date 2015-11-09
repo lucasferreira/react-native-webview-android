@@ -26,8 +26,23 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @Override
     public RNWebView createViewInstance(ThemedReactContext context) {
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
+        CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
+        CookieManager.getInstance().setAcceptThirdPartyCookies(true); // add default cookie support
 
         return new RNWebView(context);
+    }
+
+    @ReactProp(name = "disableCookies", defaultBoolean = false)
+    public void setBuiltInZoomControls(RNWebView view, boolean disableCookies) {
+        if(disableCookies) {
+            CookieManager.getInstance().setAcceptCookie(false);
+            CookieManager.getInstance().setAcceptFileSchemeCookies(false);
+            CookieManager.getInstance().setAcceptThirdPartyCookies(false);
+        } else {
+            CookieManager.getInstance().setAcceptCookie(true);
+            CookieManager.getInstance().setAcceptFileSchemeCookies(true);
+            CookieManager.getInstance().setAcceptThirdPartyCookies(true);
+        }
     }
 
     @ReactProp(name = "builtInZoomControls", defaultBoolean = false)
