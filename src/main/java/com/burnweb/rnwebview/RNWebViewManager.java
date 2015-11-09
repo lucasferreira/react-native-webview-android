@@ -79,6 +79,11 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         view.loadData(html, "text/html", view.getCharset());
     }
 
+    @ReactProp(name = "injectedJavaScript")
+    public void setInjectedJavaScript(RNWebView view, @Nullable String injectedJavaScript) {
+        view.setInjectedJavaScript(injectedJavaScript);
+    }
+
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(

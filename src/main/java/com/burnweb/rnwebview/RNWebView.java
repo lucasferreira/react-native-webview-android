@@ -25,10 +25,26 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     }
 
     protected class EventWebClient extends WebViewClient {
+
+        private String injectedJavaScript = null;
+
+        public void setInjectedJavaScript(String injectedJavaScript) {
+            this.injectedJavaScript = injectedJavaScript;
+        }
+
+        public String getInjectedJavaScript() {
+            return this.injectedJavaScript;
+        }
+
         public void onPageFinished(WebView view, String url) {
             mEventDispatcher.dispatchEvent(
                     new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), false, url, view.canGoBack(), view.canGoForward()));
+
+            if(getInjectedJavaScript() != null) {
+                view.loadUrl("javascript:(function() { " + getInjectedJavaScript() + "})()");
+            }
         }
+
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             mEventDispatcher.dispatchEvent(
                     new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), true, url, view.canGoBack(), view.canGoForward()));
@@ -36,12 +52,14 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     }
 
     private final EventDispatcher mEventDispatcher;
+    private final EventWebClient mWebViewClient;
     private String charset = "UTF-8";
 
     public RNWebView(ReactContext reactContext) {
         super(reactContext);
 
         mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
+        mWebViewClient = new EventWebClient();
 
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
@@ -57,8 +75,8 @@ import com.facebook.react.uimanager.events.EventDispatcher;
             this.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
+        this.setWebViewClient(mWebViewClient);
         this.setWebChromeClient(new WebChromeClient());
-        this.setWebViewClient(new EventWebClient());
     }
 
     public void setCharset(String charset) {
@@ -67,6 +85,14 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     public String getCharset() {
         return this.charset;
+    }
+
+    public void setInjectedJavaScript(String injectedJavaScript) {
+        mWebViewClient.setInjectedJavaScript(injectedJavaScript);
+    }
+
+    public String getInjectedJavaScript() {
+        return mWebViewClient.getInjectedJavaScript();
     }
 
     public GeoWebChromeClient getGeoClient() {

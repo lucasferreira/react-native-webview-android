@@ -13,6 +13,7 @@ var WebViewAndroid = React.createClass({
     url: PropTypes.string,
     html: PropTypes.string,
     htmlCharset: PropTypes.string,
+    injectedJavaScript: PropTypes.string,
     disableCookies: PropTypes.bool,
     javaScriptEnabled: PropTypes.bool,
     geolocationEnabled: PropTypes.bool,
