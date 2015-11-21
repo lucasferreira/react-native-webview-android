@@ -73,6 +73,15 @@ var { StyleSheet } = React;
 var WebViewAndroid = require('react-native-webview-android');
 
 var WebViewAndroidExample = React.createClass({
+    goBack: function() {
+      this.refs.webViewAndroidSample.goBack(); // you can use this callbacks to control webview
+    },
+    goForward: function() {
+      this.refs.webViewAndroidSample.goForward();
+    },
+    reload: function() {
+      this.refs.webViewAndroidSample.reload();
+    },
     onNavigationStateChange: function(event) {
         console.log(event);
     },

@@ -5,6 +5,8 @@ import javax.annotation.Nullable;
 import android.webkit.WebChromeClient;
 import android.webkit.CookieManager;
 
+import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
+import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ViewGroupManager;
 import com.facebook.react.uimanager.ThemedReactContext;
@@ -14,6 +16,10 @@ import com.facebook.react.common.annotations.VisibleForTesting;
 import java.util.Map;
 
 public class RNWebViewManager extends ViewGroupManager<RNWebView> {
+
+    public static final int GO_BACK = 1;
+    public static final int GO_FORWARD = 2;
+    public static final int RELOAD = 3;
 
     @VisibleForTesting
     public static final String REACT_CLASS = "RNWebViewAndroid";
@@ -84,6 +90,30 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @ReactProp(name = "injectedJavaScript")
     public void setInjectedJavaScript(RNWebView view, @Nullable String injectedJavaScript) {
         view.setInjectedJavaScript(injectedJavaScript);
+    }
+
+    @Override
+    public @Nullable Map<String, Integer> getCommandsMap() {
+        return MapBuilder.of(
+            "goBack", GO_BACK,
+            "goForward", GO_FORWARD,
+            "reload", RELOAD
+        );
+    }
+
+    @Override
+    public void receiveCommand(RNWebView view, int commandId, @Nullable ReadableArray args) {
+        switch (commandId) {
+            case GO_BACK:
+                view.goBack();
+                break;
+            case GO_FORWARD:
+                view.goForward();
+                break;
+            case RELOAD:
+                view.reload();
+                break;
+        }
     }
 
     @Override
