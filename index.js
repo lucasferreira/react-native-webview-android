@@ -12,6 +12,7 @@ var WEBVIEW_REF = 'androidWebView';
 var WebViewAndroid = React.createClass({
   propTypes: {
     url: PropTypes.string,
+    baseUrl: PropTypes.string,
     html: PropTypes.string,
     htmlCharset: PropTypes.string,
     injectedJavaScript: PropTypes.string,

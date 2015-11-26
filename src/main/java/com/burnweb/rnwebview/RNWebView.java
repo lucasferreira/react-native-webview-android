@@ -54,6 +54,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     private final EventDispatcher mEventDispatcher;
     private final EventWebClient mWebViewClient;
     private String charset = "UTF-8";
+    private String baseUrl = "file:///";
 
     public RNWebView(ReactContext reactContext) {
         super(reactContext);
@@ -93,6 +94,14 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     public String getInjectedJavaScript() {
         return mWebViewClient.getInjectedJavaScript();
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
+    }
+
+    public String getBaseUrl() {
+        return this.baseUrl;
     }
 
     public GeoWebChromeClient getGeoClient() {
