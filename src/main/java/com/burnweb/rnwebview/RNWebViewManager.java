@@ -77,6 +77,11 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         view.loadUrl(url);
     }
 
+    @ReactProp(name = "baseUrl")
+    public void setBaseUrl(RNWebView view, @Nullable String baseUrl) {
+        view.setBaseUrl(baseUrl);
+    }
+
     @ReactProp(name = "htmlCharset")
     public void setHtmlCharset(RNWebView view, @Nullable String htmlCharset) {
         if(htmlCharset != null) view.setCharset(htmlCharset);
@@ -84,7 +89,7 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @ReactProp(name = "html")
     public void setHtml(RNWebView view, @Nullable String html) {
-        view.loadData(html, "text/html", view.getCharset());
+        view.loadDataWithBaseURL(view.getBaseUrl(), html, "text/html", view.getCharset(), null);
     }
 
     @ReactProp(name = "injectedJavaScript")
