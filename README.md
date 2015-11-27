@@ -98,6 +98,8 @@ var WebViewAndroidExample = React.createClass({
               url={SITE_URL}
               style={styles.containerWebView} />
         );
+
+        // other attributes: html, htmlCharset, baseUrl, injectedJavaScript, disableCookies
     }
 });
 
