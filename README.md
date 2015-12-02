@@ -1,6 +1,7 @@
 # react-native-webview-android
 Simple React Native Android module to use Android's WebView inside your app.
-This module will be useful until the official RN support aren't released.
+
+This module will be useful until the official RN support are released.
 
 [![npm version](http://img.shields.io/npm/v/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
 [![npm downloads](http://img.shields.io/npm/dm/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
