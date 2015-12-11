@@ -107,5 +107,10 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     public GeoWebChromeClient getGeoClient() {
         return new GeoWebChromeClient();
     }
-
+    
+    @Override
+    public void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.loadDataWithBaseURL(this.getBaseUrl(), "<html></html>", "text/html", this.getCharset(), null);
+    }
 }
