@@ -86,6 +86,9 @@ var WebViewAndroidExample = React.createClass({
     onNavigationStateChange: function(event) {
         console.log(event);
     },
+    onContentHeightChange: function(newHeight) {
+        console.log(newHeight);
+    },
     render: function() {
         var SITE_URL = "https://www.google.com";
 
@@ -96,6 +99,7 @@ var WebViewAndroidExample = React.createClass({
               geolocationEnabled={false}
               builtInZoomControls={false}
               onNavigationStateChange={this.onNavigationStateChange}
+              onContentHeightChange={this.onContentHeightChange}
               url={SITE_URL}
               style={styles.containerWebView} />
         );
