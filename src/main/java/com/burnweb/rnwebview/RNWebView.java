@@ -17,6 +17,17 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
 /*package*/ class RNWebView extends WebView {
 
+    @Override
+    public void invalidate() {
+        super.invalidate();
+        int contentHeight = getContentHeight();
+        if (contentHeight != mOldContentHeight) {
+            mOldContentHeight = contentHeight;
+            mEventDispatcher.dispatchEvent(
+                    new ContentHeightChangeEvent(getId(), SystemClock.uptimeMillis(), contentHeight));
+        }
+    }
+
     protected class GeoWebChromeClient extends WebChromeClient {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
@@ -53,6 +64,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     private final EventDispatcher mEventDispatcher;
     private final EventWebClient mWebViewClient;
+    private int mOldContentHeight = 0;
     private String charset = "UTF-8";
     private String baseUrl = "file:///";
 

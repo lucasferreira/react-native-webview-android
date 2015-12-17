@@ -124,7 +124,8 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(
-                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
+                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"),
+                ContentHeightChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onContentHeightChange")
         );
     }
 
