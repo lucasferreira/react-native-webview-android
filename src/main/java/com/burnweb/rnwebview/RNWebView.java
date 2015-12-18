@@ -38,7 +38,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
         public void onPageFinished(WebView view, String url) {
             mEventDispatcher.dispatchEvent(
-                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), false, url, view.canGoBack(), view.canGoForward()));
+                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
 
             if(getInjectedJavaScript() != null) {
                 view.loadUrl("javascript:(function() { " + getInjectedJavaScript() + "})()");
@@ -47,7 +47,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             mEventDispatcher.dispatchEvent(
-                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), true, url, view.canGoBack(), view.canGoForward()));
+                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), true, url, view.canGoBack(), view.canGoForward()));
         }
     }
 

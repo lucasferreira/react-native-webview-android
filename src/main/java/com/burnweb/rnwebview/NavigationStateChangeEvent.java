@@ -10,14 +10,16 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
     public static final String EVENT_NAME = "navigationStateChange";
 
+    private final String mTitle;
     private final boolean mIsLoading;
     private final String mUrl;
     private final boolean mCanGoBack;
     private final boolean mCanGoForward;
 
-    protected NavigationStateChangeEvent(int viewTag, long timestampMs, boolean isLoading, String url, boolean canGoBack, boolean canGoForward) {
+    protected NavigationStateChangeEvent(int viewTag, long timestampMs, String title, boolean isLoading, String url, boolean canGoBack, boolean canGoForward) {
         super(viewTag, timestampMs);
 
+        mTitle = title;
         mIsLoading = isLoading;
         mUrl = url;
         mCanGoBack = canGoBack;
@@ -36,6 +38,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
     private WritableMap serializeEventData() {
         WritableMap eventData = Arguments.createMap();
+        eventData.putString("title", mTitle);
         eventData.putBoolean("loading", mIsLoading);
         eventData.putBoolean("canGoBack", mCanGoBack);
         eventData.putBoolean("canGoForward", mCanGoForward);
