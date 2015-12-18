@@ -64,7 +64,9 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
+        this.getSettings().setDomStorageEnabled(true);
         this.getSettings().setGeolocationEnabled(false);
+        this.getSettings().setPluginState(WebSettings.PluginState.ON);
         this.getSettings().setAllowFileAccess(true);
         this.getSettings().setAllowFileAccessFromFileURLs(true);
         this.getSettings().setAllowUniversalAccessFromFileURLs(true);
@@ -107,7 +109,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     public GeoWebChromeClient getGeoClient() {
         return new GeoWebChromeClient();
     }
-    
+
     @Override
     public void onDetachedFromWindow() {
         super.onDetachedFromWindow();

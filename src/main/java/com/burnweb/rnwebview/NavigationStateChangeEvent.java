@@ -1,6 +1,5 @@
 package com.burnweb.rnwebview;
 
-
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.uimanager.events.Event;
@@ -40,9 +39,10 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
         WritableMap eventData = Arguments.createMap();
         eventData.putString("title", mTitle);
         eventData.putBoolean("loading", mIsLoading);
+        eventData.putString("url", mUrl);
         eventData.putBoolean("canGoBack", mCanGoBack);
         eventData.putBoolean("canGoForward", mCanGoForward);
-        eventData.putString("url", mUrl);
+
         return eventData;
     }
 

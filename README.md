@@ -28,8 +28,8 @@ project(':RNWebView').projectDir = new File(rootProject.projectDir, '../node_mod
 ```gradle
 ...
 dependencies {
-    ...
-    compile project(':RNWebView')
+  ...
+  compile project(':RNWebView')
 }
 ```
 
@@ -73,7 +73,18 @@ var { StyleSheet } = React;
 
 var WebViewAndroid = require('react-native-webview-android');
 
+var SITE_URL = "https://www.google.com";
+
 var WebViewAndroidExample = React.createClass({
+    getInitialState: function() {
+      return {
+        url: SITE_URL,
+        status: 'No Page Loaded',
+        backButtonEnabled: false,
+        forwardButtonEnabled: false,
+        loading: true,
+      };
+    },
     goBack: function() {
       this.refs.webViewAndroidSample.goBack(); // you can use this callbacks to control webview
     },
@@ -84,32 +95,44 @@ var WebViewAndroidExample = React.createClass({
       this.refs.webViewAndroidSample.reload();
     },
     onNavigationStateChange: function(event) {
-        console.log(event);
+      console.log(event);
+
+      this.setState({
+        backButtonEnabled: event.canGoBack,
+        forwardButtonEnabled: event.canGoForward,
+        url: event.url,
+        status: event.title,
+        loading: event.loading
+      });
     },
     render: function() {
-        var SITE_URL = "https://www.google.com";
+      return (
+        <WebViewAndroid
+          ref="webViewAndroidSample"
+          javaScriptEnabled={true}
+          geolocationEnabled={false}
+          builtInZoomControls={false}
+          onNavigationStateChange={this.onNavigationStateChange}
+          url={SITE_URL}
+          style={styles.containerWebView} />
+      );
 
-        return (
-            <WebViewAndroid
-              ref="webViewAndroidSample"
-              javaScriptEnabled={true}
-              geolocationEnabled={false}
-              builtInZoomControls={false}
-              onNavigationStateChange={this.onNavigationStateChange}
-              url={SITE_URL}
-              style={styles.containerWebView} />
-        );
-
-        // other attributes: html, htmlCharset, baseUrl, injectedJavaScript, disableCookies
+      // other attributes: html(string), htmlCharset(string), baseUrl(string), injectedJavaScript(string), disableCookies(bool), disablePlugins(bool), userAgent(string)
     }
 });
 
 var styles = StyleSheet.create({
-    containerWebView: {
-        flex: 1,
-    }
+  containerWebView: {
+    flex: 1,
+  }
 });
 ```
+
+## Tips for Video (HTML5) inside WebView
+
+To work with some html5 video player inside your Webview, I recommend you to set the android:hardwareAccelerated="true" in your AndroidManifest.xml file.
+
+More info here: http://stackoverflow.com/questions/17259636/enabling-html5-video-playback-in-android-webview
 
 ## License
 MIT
