@@ -3,6 +3,7 @@ package com.burnweb.rnwebview;
 import javax.annotation.Nullable;
 
 import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.CookieManager;
 
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
@@ -50,6 +51,15 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         }
     }
 
+    @ReactProp(name = "disablePlugins", defaultBoolean = false)
+    public void setDisablePlugins(RNWebView view, boolean disablePlugins) {
+        if(disablePlugins) {
+            view.getSettings().setPluginState(WebSettings.PluginState.OFF);
+        } else {
+            view.getSettings().setPluginState(WebSettings.PluginState.ON);
+        }
+    }
+
     @ReactProp(name = "builtInZoomControls", defaultBoolean = false)
     public void setBuiltInZoomControls(RNWebView view, boolean builtInZoomControls) {
         view.getSettings().setBuiltInZoomControls(builtInZoomControls);
@@ -70,6 +80,11 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @ReactProp(name = "javaScriptEnabled", defaultBoolean = true)
     public void setJavaScriptEnabled(RNWebView view, boolean javaScriptEnabled) {
         view.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+    }
+
+    @ReactProp(name = "userAgent")
+    public void setUserAgent(RNWebView view, @Nullable String userAgent) {
+        if(userAgent != null) view.getSettings().setUserAgentString(userAgent);
     }
 
     @ReactProp(name = "url")
