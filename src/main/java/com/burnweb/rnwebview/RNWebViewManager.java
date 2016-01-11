@@ -85,7 +85,6 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @ReactProp(name = "openLinksInBrowser", defaultBoolean = false)
     public void setOpenLinksInBrowser(RNWebView view, boolean openLinksInBrowser) {
-        Log.e("react", "open " + openLinksInBrowser);
         view.setOpenLinksInBrowser(openLinksInBrowser);
     }
 
