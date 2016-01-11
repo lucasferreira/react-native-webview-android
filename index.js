@@ -23,6 +23,7 @@ var WebViewAndroid = React.createClass({
     geolocationEnabled: PropTypes.bool,
     builtInZoomControls: PropTypes.bool,
     onNavigationStateChange: PropTypes.func,
+    openLinksInBrowser: PropTypes.bool,
     onContentHeightChange: PropTypes.func
   },
   _onNavigationStateChange: function(event) {

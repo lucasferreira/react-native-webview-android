@@ -2,6 +2,7 @@ package com.burnweb.rnwebview;
 
 import javax.annotation.Nullable;
 
+import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
@@ -80,6 +81,12 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @ReactProp(name = "javaScriptEnabled", defaultBoolean = true)
     public void setJavaScriptEnabled(RNWebView view, boolean javaScriptEnabled) {
         view.getSettings().setJavaScriptEnabled(javaScriptEnabled);
+    }
+
+    @ReactProp(name = "openLinksInBrowser", defaultBoolean = false)
+    public void setOpenLinksInBrowser(RNWebView view, boolean openLinksInBrowser) {
+        Log.e("react", "open " + openLinksInBrowser);
+        view.setOpenLinksInBrowser(openLinksInBrowser);
     }
 
     @ReactProp(name = "userAgent")

@@ -1,5 +1,7 @@
 package com.burnweb.rnwebview;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.SystemClock;
 import android.util.Log;
 import android.content.Context;
@@ -36,6 +38,18 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     }
 
     protected class EventWebClient extends WebViewClient {
+        private boolean openLinksInBrowser = false;
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            if (openLinksInBrowser) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                view.getContext().startActivity(browserIntent);
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         private String injectedJavaScript = null;
 
@@ -70,7 +84,6 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     public RNWebView(ReactContext reactContext) {
         super(reactContext);
-
         mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
         mWebViewClient = new EventWebClient();
 
@@ -104,6 +117,10 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     public void setInjectedJavaScript(String injectedJavaScript) {
         mWebViewClient.setInjectedJavaScript(injectedJavaScript);
+    }
+
+    public void setOpenLinksInBrowser(boolean openInBrowser) {
+        mWebViewClient.openLinksInBrowser = openInBrowser;
     }
 
     public String getInjectedJavaScript() {
