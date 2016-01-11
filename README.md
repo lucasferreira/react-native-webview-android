@@ -109,7 +109,6 @@ var WebViewAndroidExample = React.createClass({
         console.log(newHeight);
     },
     render: function() {
-        var SITE_URL = "https://www.google.com";
       return (
         <WebViewAndroid
           ref="webViewAndroidSample"
