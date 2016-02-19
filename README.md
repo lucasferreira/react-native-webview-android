@@ -31,6 +31,26 @@ dependencies {
 }
 ```
 
+* Register Module - RN >= 0.18 (in MainActivity.java)
+
+```java
+import com.burnweb.rnwebview.RNWebViewPackage;  // <--- import
+
+public class MainActivity extends ReactActivity {
+  ......
+
+  @Override
+  protected List<ReactPackage> getPackages() {
+    return Arrays.<ReactPackage>asList(
+            new MainReactPackage(),
+            new RNWebViewPackage()); // <------ add this line to your MainActivity class
+  }
+
+  ......
+
+}
+```
+
 * Register Module - RN <= 0.17 (in MainActivity.java)
 
 ```java
@@ -49,7 +69,7 @@ public class MainActivity extends Activity implements DefaultHardwareBackBtnHand
       .setBundleAssetName("index.android.bundle")
       .setJSMainModuleName("index.android")
       .addPackage(new MainReactPackage())
-      .addPackage(new RNWebViewPackage()) // <------ add this line to yout MainActivity class
+      .addPackage(new RNWebViewPackage()) // <------ add this line to your MainActivity class
       .setUseDeveloperSupport(BuildConfig.DEBUG)
       .setInitialLifecycleState(LifecycleState.RESUMED)
       .build();
