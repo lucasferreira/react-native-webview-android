@@ -5,8 +5,6 @@ import javax.annotation.Nullable;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
-
-import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
 import com.facebook.react.uimanager.ViewGroupManager;
@@ -82,6 +80,11 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         view.getSettings().setJavaScriptEnabled(javaScriptEnabled);
     }
 
+    @ReactProp(name = "openLinksInBrowser", defaultBoolean = false)
+    public void setOpenLinksInBrowser(RNWebView view, boolean openLinksInBrowser) {
+        view.setOpenLinksInBrowser(openLinksInBrowser);
+    }
+
     @ReactProp(name = "userAgent")
     public void setUserAgent(RNWebView view, @Nullable String userAgent) {
         if(userAgent != null) view.getSettings().setUserAgentString(userAgent);
@@ -139,7 +142,8 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.of(
-                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
+                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"),
+                ContentHeightChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onContentHeightChange")
         );
     }
 

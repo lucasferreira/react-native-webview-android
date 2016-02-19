@@ -123,6 +123,9 @@ var WebViewAndroidExample = React.createClass({
         loading: event.loading
       });
     },
+    onContentHeightChange: function(newHeight) {
+        console.log(newHeight);
+    },
     render: function() {
       return (
         <WebViewAndroid
@@ -131,6 +134,7 @@ var WebViewAndroidExample = React.createClass({
           geolocationEnabled={false}
           builtInZoomControls={false}
           onNavigationStateChange={this.onNavigationStateChange}
+          onContentHeightChange={this.onContentHeightChange}
           url={SITE_URL}
           style={styles.containerWebView} />
       );
