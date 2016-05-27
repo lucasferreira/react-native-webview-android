@@ -2,9 +2,16 @@ package com.burnweb.rnwebview;
 
 import javax.annotation.Nullable;
 
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
+
+import com.facebook.react.bridge.ReadableMap;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 
 import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReadableArray;
@@ -21,6 +28,10 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     public static final int GO_BACK = 1;
     public static final int GO_FORWARD = 2;
     public static final int RELOAD = 3;
+    private static final String BLANK_URL = "about:blank";
+    private static final String HTTP_METHOD_POST = "POST";
+
+
 
     @VisibleForTesting
     public static final String REACT_CLASS = "RNWebViewAndroid";
@@ -90,6 +101,46 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @ReactProp(name = "url")
     public void setUrl(RNWebView view, @Nullable String url) {
         view.loadUrl(url);
+    }
+
+    @ReactProp(name = "source")
+    public void setSource(RNWebView view, @Nullable ReadableMap source) {
+      if (source != null) {
+        if (source.hasKey("uri")) {
+          String url = source.getString("uri");
+          if (source.hasKey("method")) {
+            String method = source.getString("method");
+            if (method.equals(HTTP_METHOD_POST)) {
+              byte[] postData = null;
+              if (source.hasKey("body")) {
+                String body = source.getString("body");
+                try {
+                  postData = body.getBytes("UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                  postData = body.getBytes();
+                }
+              }
+              if (postData == null) {
+                postData = new byte[0];
+              }
+              view.postUrl(url, postData);
+              return;
+            }
+          }
+          HashMap<String, String> headerMap = new HashMap<>();
+          if (source.hasKey("headers")) {
+            ReadableMap headers = source.getMap("headers");
+            ReadableMapKeySetIterator iter = headers.keySetIterator();
+            while (iter.hasNextKey()) {
+              String key = iter.nextKey();
+              headerMap.put(key, headers.getString(key));
+            }
+          }
+          view.loadUrl(url, headerMap);
+          return;
+        }
+      }
+      view.loadUrl(BLANK_URL);
     }
 
     @ReactProp(name = "baseUrl")
