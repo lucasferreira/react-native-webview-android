@@ -96,7 +96,16 @@ var SITE_URL = "https://www.google.com";
 var WebViewAndroidExample = React.createClass({
     getInitialState: function() {
       return {
-        url: SITE_URL,
+        // url: SITE_URL,
+        //now you can use a source object like React Native Webview.
+        //source {uri: string, method: string, headers: object, body: string}, {html: string, baseUrl: string}
+        //Loads static html or a uri (with optional headers) in the WebView. <Just from React Native's Doc>
+        source:{
+          uri: SITE_URL,
+          headers:{
+            ...
+          },
+        },
         status: 'No Page Loaded',
         backButtonEnabled: false,
         forwardButtonEnabled: false,
