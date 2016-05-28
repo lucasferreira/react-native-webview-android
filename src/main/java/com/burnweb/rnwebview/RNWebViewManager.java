@@ -28,6 +28,9 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     public static final int GO_BACK = 1;
     public static final int GO_FORWARD = 2;
     public static final int RELOAD = 3;
+
+    private static final String HTML_ENCODING = "UTF-8";
+    private static final String HTML_MIME_TYPE = "text/html; charset=utf-8";
     private static final String BLANK_URL = "about:blank";
     private static final String HTTP_METHOD_POST = "POST";
 
@@ -106,6 +109,17 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     @ReactProp(name = "source")
     public void setSource(RNWebView view, @Nullable ReadableMap source) {
       if (source != null) {
+        if (source.hasKey("html")) {
+          String html = source.getString("html");
+          if (source.hasKey("baseUrl")) {
+            view.loadDataWithBaseURL(
+                source.getString("baseUrl"), html, HTML_MIME_TYPE, HTML_ENCODING, null);
+          } else {
+            view.loadData(html, HTML_MIME_TYPE, HTML_ENCODING);
+          }
+          return;
+        }
+
         if (source.hasKey("uri")) {
           String url = source.getString("uri");
           if (source.hasKey("method")) {
