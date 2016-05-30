@@ -96,16 +96,17 @@ var SITE_URL = "https://www.google.com";
 var WebViewAndroidExample = React.createClass({
     getInitialState: function() {
       return {
-        // url: SITE_URL,
-        //now you can use a source object like React Native Webview.
-        //source {uri: string, method: string, headers: object, body: string}, {html: string, baseUrl: string}
-        //Loads static html or a uri (with optional headers) in the WebView. <Just from React Native's Doc>
-        source:{
-          uri: SITE_URL,
-          headers:{
-            ...
-          },
-        },
+        url: SITE_URL,
+        // OR
+        // you can use a source object like React Native Webview.
+        // source {uri: string, method: string, headers: object, body: string}, {html: string, baseUrl: string}
+        // Loads static html or a uri (with optional headers) in the WebView. <Just like React Native's version>
+        // source: {
+        //   uri: SITE_URL,
+        //   headers: {
+        //     ...
+        //   },
+        // },
         status: 'No Page Loaded',
         backButtonEnabled: false,
         forwardButtonEnabled: false,
@@ -140,11 +141,11 @@ var WebViewAndroidExample = React.createClass({
           geolocationEnabled={false}
           builtInZoomControls={false}
           onNavigationStateChange={this.onNavigationStateChange}
-          url={SITE_URL}
+          url={SITE_URL} // or use the source(object) attribute...
           style={styles.containerWebView} />
       );
 
-      // other attributes: html(string), htmlCharset(string), baseUrl(string), injectedJavaScript(string), disableCookies(bool), disablePlugins(bool), userAgent(string)
+      // other attributes: source(object), html(string), htmlCharset(string), baseUrl(string), injectedJavaScript(string), disableCookies(bool), disablePlugins(bool), userAgent(string)
     }
 });
 

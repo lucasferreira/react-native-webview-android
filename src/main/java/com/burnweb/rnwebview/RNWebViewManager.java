@@ -34,8 +34,6 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
     private static final String BLANK_URL = "about:blank";
     private static final String HTTP_METHOD_POST = "POST";
 
-
-
     @VisibleForTesting
     public static final String REACT_CLASS = "RNWebViewAndroid";
 
@@ -112,8 +110,7 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         if (source.hasKey("html")) {
           String html = source.getString("html");
           if (source.hasKey("baseUrl")) {
-            view.loadDataWithBaseURL(
-                source.getString("baseUrl"), html, HTML_MIME_TYPE, HTML_ENCODING, null);
+            view.loadDataWithBaseURL(source.getString("baseUrl"), html, HTML_MIME_TYPE, HTML_ENCODING, null);
           } else {
             view.loadData(html, HTML_MIME_TYPE, HTML_ENCODING);
           }
