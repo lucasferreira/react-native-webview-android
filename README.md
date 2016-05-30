@@ -18,7 +18,7 @@ npm install react-native-webview-android --save
 ```gradle
 ...
 include ':RNWebView', ':app'
-project(':RNWebView').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview-android')
+project(':RNWebView').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-webview-android/android')
 ```
 
 * In `android/app/build.gradle`
