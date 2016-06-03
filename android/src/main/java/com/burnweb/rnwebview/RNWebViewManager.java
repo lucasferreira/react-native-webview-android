@@ -52,6 +52,11 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         return rnwv;
     }
 
+    @ReactProp(name = "allowUrlRedirect", defaultBoolean = false)
+    public void setAllowUrlRedirect(RNWebView view, boolean allowUrlRedirect) {
+        view.setAllowUrlRedirect(allowUrlRedirect);
+    }
+
     @ReactProp(name = "disableCookies", defaultBoolean = false)
     public void setDisableCookies(RNWebView view, boolean disableCookies) {
         if(disableCookies) {

@@ -36,6 +36,17 @@ import com.facebook.react.uimanager.events.EventDispatcher;
             return this.injectedJavaScript;
         }
 
+        public boolean shouldOverrideUrlLoading(WebView view, String url){
+            if(RNWebView.this.allowUrlRedirect) {
+                // do your handling codes here, which url is the requested url
+                // probably you need to open that url rather than redirect:
+                view.loadUrl(url);
+                return false; // then it is not handled by default action
+            }
+
+            return super.shouldOverrideUrlLoading(view, url);
+        }
+
         public void onPageFinished(WebView view, String url) {
             mEventDispatcher.dispatchEvent(
                     new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
@@ -55,6 +66,7 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     private final EventWebClient mWebViewClient;
     private String charset = "UTF-8";
     private String baseUrl = "file:///";
+    private boolean allowUrlRedirect = false;
 
     public RNWebView(ReactContext reactContext) {
         super(reactContext);
@@ -88,6 +100,14 @@ import com.facebook.react.uimanager.events.EventDispatcher;
 
     public String getCharset() {
         return this.charset;
+    }
+
+    public void setAllowUrlRedirect(boolean a) {
+        this.allowUrlRedirect = a;
+    }
+
+    public boolean getAllowUrlRedirect() {
+        return this.allowUrlRedirect;
     }
 
     public void setInjectedJavaScript(String injectedJavaScript) {
