@@ -1,5 +1,5 @@
 # react-native-webview-android
-Simple React Native Android module to use Android's WebView inside your app.
+Simple React Native Android module to use Android's WebView inside your app (with experimental html file upload input support).
 
 [![npm version](http://img.shields.io/npm/v/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
 [![npm downloads](http://img.shields.io/npm/dm/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
@@ -44,39 +44,6 @@ public class MainActivity extends ReactActivity {
     return Arrays.<ReactPackage>asList(
             new MainReactPackage(),
             new RNWebViewPackage()); // <------ add this line to your MainActivity class
-  }
-
-  ......
-
-}
-```
-
-* Register Module - RN <= 0.17 (in MainActivity.java)
-
-```java
-import com.burnweb.rnwebview.RNWebViewPackage;  // <--- import
-
-public class MainActivity extends Activity implements DefaultHardwareBackBtnHandler {
-  ......
-
-  @Override
-  protected void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    mReactRootView = new ReactRootView(this);
-
-    mReactInstanceManager = ReactInstanceManager.builder()
-      .setApplication(getApplication())
-      .setBundleAssetName("index.android.bundle")
-      .setJSMainModuleName("index.android")
-      .addPackage(new MainReactPackage())
-      .addPackage(new RNWebViewPackage()) // <------ add this line to your MainActivity class
-      .setUseDeveloperSupport(BuildConfig.DEBUG)
-      .setInitialLifecycleState(LifecycleState.RESUMED)
-      .build();
-
-    mReactRootView.startReactApplication(mReactInstanceManager, "AndroidRNSample", null);
-
-    setContentView(mReactRootView);
   }
 
   ......

@@ -1,46 +1,41 @@
 package com.burnweb.rnwebview;
 
+import android.annotation.SuppressLint;
+
+import android.net.Uri;
 import android.os.SystemClock;
-import android.util.Log;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JsResult;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
 
-/*package*/ class RNWebView extends WebView {
+class RNWebView extends WebView implements LifecycleEventListener {
 
-    protected class GeoWebChromeClient extends WebChromeClient {
-        @Override
-        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
-            callback.invoke(origin, true, false);
-        }
-    }
+    private final EventDispatcher mEventDispatcher;
+    private final RNWebViewManager mViewManager;
+
+    private String charset = "UTF-8";
+    private String baseUrl = "file:///";
+    private String injectedJavaScript = null;
+    private boolean allowUrlRedirect = false;
 
     protected class EventWebClient extends WebViewClient {
-
-        private String injectedJavaScript = null;
-
-        public void setInjectedJavaScript(String injectedJavaScript) {
-            this.injectedJavaScript = injectedJavaScript;
-        }
-
-        public String getInjectedJavaScript() {
-            return this.injectedJavaScript;
-        }
-
         public boolean shouldOverrideUrlLoading(WebView view, String url){
-            if(RNWebView.this.allowUrlRedirect) {
+            if(RNWebView.this.getAllowUrlRedirect()) {
                 // do your handling codes here, which url is the requested url
                 // probably you need to open that url rather than redirect:
                 view.loadUrl(url);
+
                 return false; // then it is not handled by default action
             }
 
@@ -48,31 +43,50 @@ import com.facebook.react.uimanager.events.EventDispatcher;
         }
 
         public void onPageFinished(WebView view, String url) {
-            mEventDispatcher.dispatchEvent(
-                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
+            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
 
-            if(getInjectedJavaScript() != null) {
-                view.loadUrl("javascript:(function() { " + getInjectedJavaScript() + "})()");
+            if(RNWebView.this.getInjectedJavaScript() != null) {
+                view.loadUrl("javascript:(function() {\n" + RNWebView.this.getInjectedJavaScript() + ";\n})();");
             }
         }
 
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            mEventDispatcher.dispatchEvent(
-                    new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), true, url, view.canGoBack(), view.canGoForward()));
+            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), true, url, view.canGoBack(), view.canGoForward()));
         }
     }
 
-    private final EventDispatcher mEventDispatcher;
-    private final EventWebClient mWebViewClient;
-    private String charset = "UTF-8";
-    private String baseUrl = "file:///";
-    private boolean allowUrlRedirect = false;
+    protected class CustomWebChromeClient extends WebChromeClient {
+        @Override
+        public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
+            mViewManager.getPackage().getModule().showAlert(url, message, result);
+            return true;
+        }
 
-    public RNWebView(ReactContext reactContext) {
+        // For Android 4.1+
+        @SuppressWarnings("unused")
+        public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+            mViewManager.getPackage().getModule().openFileChooser(uploadMsg, acceptType, capture);
+        }
+
+        // For Android 5.0+
+        @SuppressLint("NewApi")
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            return mViewManager.getPackage().getModule().showFileChooser(filePathCallback, fileChooserParams.createIntent());
+        }
+    }
+
+    protected class GeoWebChromeClient extends CustomWebChromeClient {
+        @Override
+        public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
+            callback.invoke(origin, true, false);
+        }
+    }
+
+    public RNWebView(RNWebViewManager viewManager, ThemedReactContext reactContext) {
         super(reactContext);
 
+        mViewManager = viewManager;
         mEventDispatcher = reactContext.getNativeModule(UIManagerModule.class).getEventDispatcher();
-        mWebViewClient = new EventWebClient();
 
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
@@ -90,8 +104,8 @@ import com.facebook.react.uimanager.events.EventDispatcher;
             this.getSettings().setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         }
 
-        this.setWebViewClient(mWebViewClient);
-        this.setWebChromeClient(new WebChromeClient());
+        this.setWebViewClient(new EventWebClient());
+        this.setWebChromeClient(getCustomClient());
     }
 
     public void setCharset(String charset) {
@@ -111,11 +125,11 @@ import com.facebook.react.uimanager.events.EventDispatcher;
     }
 
     public void setInjectedJavaScript(String injectedJavaScript) {
-        mWebViewClient.setInjectedJavaScript(injectedJavaScript);
+        this.injectedJavaScript = injectedJavaScript;
     }
 
     public String getInjectedJavaScript() {
-        return mWebViewClient.getInjectedJavaScript();
+        return this.injectedJavaScript;
     }
 
     public void setBaseUrl(String baseUrl) {
@@ -126,13 +140,33 @@ import com.facebook.react.uimanager.events.EventDispatcher;
         return this.baseUrl;
     }
 
+    public CustomWebChromeClient getCustomClient() {
+        return new CustomWebChromeClient();
+    }
+
     public GeoWebChromeClient getGeoClient() {
         return new GeoWebChromeClient();
     }
 
     @Override
-    public void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.loadDataWithBaseURL(this.getBaseUrl(), "<html></html>", "text/html", this.getCharset(), null);
+    public void onHostResume() {
+
     }
+
+    @Override
+    public void onHostPause() {
+
+    }
+
+    @Override
+    public void onHostDestroy() {
+        destroy();
+    }
+
+    @Override
+    public void onDetachedFromWindow() {
+        this.loadDataWithBaseURL(this.getBaseUrl(), "<html></html>", "text/html", this.getCharset(), null);
+        super.onDetachedFromWindow();
+    }
+
 }

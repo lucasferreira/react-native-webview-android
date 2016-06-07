@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-android",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Simple React Native Android module to use Android's WebView inside your app",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,10 @@
     "frame",
     "iframe",
     "embed",
-    "android"
+    "android",
+    "upload",
+    "files",
+    "input"
   ],
   "author": "Lucas Ferreira <contato@lucasferreira.com>",
   "license": "MIT",

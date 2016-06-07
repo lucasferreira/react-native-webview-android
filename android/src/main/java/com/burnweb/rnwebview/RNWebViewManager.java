@@ -2,37 +2,32 @@ package com.burnweb.rnwebview;
 
 import javax.annotation.Nullable;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
 
-import com.facebook.react.bridge.JSApplicationIllegalArgumentException;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.common.MapBuilder;
-import com.facebook.react.uimanager.ViewGroupManager;
+import com.facebook.react.uimanager.SimpleViewManager;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.common.annotations.VisibleForTesting;
 
-import java.util.Map;
-
-public class RNWebViewManager extends ViewGroupManager<RNWebView> {
+public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     public static final int GO_BACK = 1;
     public static final int GO_FORWARD = 2;
     public static final int RELOAD = 3;
 
-    private static final String HTML_ENCODING = "UTF-8";
-    private static final String HTML_MIME_TYPE = "text/html; charset=utf-8";
-    private static final String BLANK_URL = "about:blank";
-    private static final String HTTP_METHOD_POST = "POST";
+    private static final String HTML_MIME_TYPE = "text/html";
+
+    private HashMap<String, String> headerMap = new HashMap<>();
+    private RNWebViewPackage aPackage;
 
     @VisibleForTesting
     public static final String REACT_CLASS = "RNWebViewAndroid";
@@ -44,12 +39,20 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @Override
     public RNWebView createViewInstance(ThemedReactContext context) {
-        RNWebView rnwv = new RNWebView(context);
+        RNWebView rnwv = new RNWebView(this, context);
 
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
 
         return rnwv;
+    }
+
+    public void setPackage(RNWebViewPackage aPackage) {
+        this.aPackage = aPackage;
+    }
+
+    public RNWebViewPackage getPackage() {
+        return this.aPackage;
     }
 
     @ReactProp(name = "allowUrlRedirect", defaultBoolean = false)
@@ -90,7 +93,7 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
             view.setWebChromeClient(view.getGeoClient());
         }
         else {
-            view.setWebChromeClient(new WebChromeClient());
+            view.setWebChromeClient(view.getCustomClient());
         }
     }
 
@@ -106,57 +109,38 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @ReactProp(name = "url")
     public void setUrl(RNWebView view, @Nullable String url) {
-        view.loadUrl(url);
+        view.loadUrl(url, headerMap);
+    }
+
+    @ReactProp(name = "headers")
+    public void setHeaders(RNWebView view, @Nullable ReadableMap headers) {
+        headerMap = new HashMap<>();
+
+        ReadableMapKeySetIterator iter = headers.keySetIterator();
+        while (iter.hasNextKey()) {
+            String key = iter.nextKey();
+            headerMap.put(key, headers.getString(key));
+        }
     }
 
     @ReactProp(name = "source")
     public void setSource(RNWebView view, @Nullable ReadableMap source) {
-      if (source != null) {
-        if (source.hasKey("html")) {
-          String html = source.getString("html");
-          if (source.hasKey("baseUrl")) {
-            view.loadDataWithBaseURL(source.getString("baseUrl"), html, HTML_MIME_TYPE, HTML_ENCODING, null);
-          } else {
-            view.loadData(html, HTML_MIME_TYPE, HTML_ENCODING);
-          }
-          return;
-        }
-
-        if (source.hasKey("uri")) {
-          String url = source.getString("uri");
-          if (source.hasKey("method")) {
-            String method = source.getString("method");
-            if (method.equals(HTTP_METHOD_POST)) {
-              byte[] postData = null;
-              if (source.hasKey("body")) {
-                String body = source.getString("body");
-                try {
-                  postData = body.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                  postData = body.getBytes();
+        if (source != null) {
+            if (source.hasKey("baseUrl")) {
+                setBaseUrl(view, source.getString("baseUrl"));
+            }
+            if (source.hasKey("html")) {
+                setHtml(view, source.getString("html"));
+                return;
+            }
+            if (source.hasKey("uri")) {
+                if (source.hasKey("headers")) {
+                    setHeaders(view, source.getMap("headers"));
                 }
-              }
-              if (postData == null) {
-                postData = new byte[0];
-              }
-              view.postUrl(url, postData);
-              return;
+                setUrl(view, source.getString("uri"));
+                return;
             }
-          }
-          HashMap<String, String> headerMap = new HashMap<>();
-          if (source.hasKey("headers")) {
-            ReadableMap headers = source.getMap("headers");
-            ReadableMapKeySetIterator iter = headers.keySetIterator();
-            while (iter.hasNextKey()) {
-              String key = iter.nextKey();
-              headerMap.put(key, headers.getString(key));
-            }
-          }
-          view.loadUrl(url, headerMap);
-          return;
         }
-      }
-      view.loadUrl(BLANK_URL);
     }
 
     @ReactProp(name = "baseUrl")
@@ -171,7 +155,7 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
 
     @ReactProp(name = "html")
     public void setHtml(RNWebView view, @Nullable String html) {
-        view.loadDataWithBaseURL(view.getBaseUrl(), html, "text/html", view.getCharset(), null);
+        view.loadDataWithBaseURL(view.getBaseUrl(), html, HTML_MIME_TYPE, view.getCharset(), null);
     }
 
     @ReactProp(name = "injectedJavaScript")
@@ -208,6 +192,13 @@ public class RNWebViewManager extends ViewGroupManager<RNWebView> {
         return MapBuilder.of(
                 NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
         );
+    }
+
+    @Override
+    public void onDropViewInstance(RNWebView webView) {
+        super.onDropViewInstance(webView);
+
+        ((ThemedReactContext) webView.getContext()).removeLifecycleEventListener(webView);
     }
 
 }

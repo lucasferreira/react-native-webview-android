@@ -8,11 +8,20 @@ import com.facebook.react.uimanager.ViewManager;
 
 import java.util.*;
 
-
 public class RNWebViewPackage implements ReactPackage {
+
+    private RNWebViewModule module;
+    private RNWebViewManager viewManager;
+
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
-        return Collections.emptyList();
+        module = new RNWebViewModule(reactContext);
+        module.setPackage(this);
+
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(module);
+
+        return modules;
     }
 
     @Override
@@ -22,6 +31,18 @@ public class RNWebViewPackage implements ReactPackage {
 
     @Override
     public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-        return Arrays.<ViewManager>asList(new RNWebViewManager());
+        viewManager = new RNWebViewManager();
+        viewManager.setPackage(this);
+
+        return Arrays.<ViewManager>asList(viewManager);
     }
+
+    public RNWebViewModule getModule() {
+        return module;
+    }
+
+    public RNWebViewManager getViewManager() {
+        return viewManager;
+    }
+
 }
