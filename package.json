@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-android",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Simple React Native Android module to use Android's WebView inside your app",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

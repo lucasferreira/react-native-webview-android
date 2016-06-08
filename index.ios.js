@@ -3,4 +3,7 @@
  */
 'use strict';
 
-module.exports = require('UnimplementedView');
+var { UnimplementedView } = require('react-native');
+var RNWebViewAndroid = UnimplementedView;
+
+module.exports = RNWebViewAndroid;
