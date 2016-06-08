@@ -9,6 +9,7 @@ import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.webkit.JsResult;
@@ -53,27 +54,28 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
         return this.aPackage;
     }
 
+    @SuppressWarnings("unused")
     public Activity getActivity() {
         return getCurrentActivity();
     }
 
     public void showAlert(String url, String message, final JsResult result) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getCurrentActivity());
-        builder.setMessage(message);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                result.confirm();
-            }
-        });
+        AlertDialog ad = new AlertDialog.Builder(getCurrentActivity())
+                                .setMessage(message)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        result.confirm();
+                                    }
+                                })
+                                .create();
 
-        AlertDialog ad = builder.create();
         ad.show();
     }
 
     // For Android 4.1+
     @SuppressWarnings("unused")
-    public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
+    public boolean startFileChooserIntent(ValueCallback<Uri> uploadMsg, String acceptType) {
         Log.d(REACT_CLASS, "Open old file dialog");
 
         if (mUploadMessage != null) {
@@ -83,23 +85,22 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
 
         mUploadMessage = uploadMsg;
 
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-
         if(acceptType == null || acceptType.isEmpty()) {
             acceptType = "*/*";
         }
 
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        i.setType(acceptType);
+        Intent intentChoose = new Intent(Intent.ACTION_GET_CONTENT);
+        intentChoose.addCategory(Intent.CATEGORY_OPENABLE);
+        intentChoose.setType(acceptType);
 
         Activity currentActivity = getCurrentActivity();
         if (currentActivity == null) {
             Log.w(REACT_CLASS, "No context available");
-            return;
+            return false;
         }
 
         try {
-            currentActivity.startActivityForResult(i, REQUEST_SELECT_FILE_LEGACY, new Bundle());
+            currentActivity.startActivityForResult(intentChoose, REQUEST_SELECT_FILE_LEGACY, new Bundle());
         } catch (ActivityNotFoundException e) {
             Log.e(REACT_CLASS, "No context available");
             e.printStackTrace();
@@ -108,12 +109,15 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
                 mUploadMessage.onReceiveValue(null);
                 mUploadMessage = null;
             }
+            return false;
         }
+
+        return true;
     }
 
     // For Android 5.0+
     @SuppressLint("NewApi")
-    public boolean showFileChooser(ValueCallback<Uri[]> filePathCallback, Intent intentChoose) {
+    public boolean startFileChooserIntent(ValueCallback<Uri[]> filePathCallback, Intent intentChoose) {
         Log.d(REACT_CLASS, "Open new file dialog");
 
         if (mUploadMessageArr != null) {
@@ -151,11 +155,11 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
         if (requestCode == REQUEST_SELECT_FILE_LEGACY) {
             if (mUploadMessage == null) return;
 
-            Uri result = data == null || resultCode != Activity.RESULT_OK ? null : data.getData();
+            Uri result = ((data == null || resultCode != Activity.RESULT_OK) ? null : data.getData());
 
             mUploadMessage.onReceiveValue(result);
             mUploadMessage = null;
-        } else if (requestCode == REQUEST_SELECT_FILE) {
+        } else if (requestCode == REQUEST_SELECT_FILE && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (mUploadMessageArr == null) return;
 
             mUploadMessageArr.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data));

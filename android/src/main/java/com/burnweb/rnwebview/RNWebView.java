@@ -58,20 +58,20 @@ class RNWebView extends WebView implements LifecycleEventListener {
     protected class CustomWebChromeClient extends WebChromeClient {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
-            mViewManager.getPackage().getModule().showAlert(url, message, result);
+            getModule().showAlert(url, message, result);
             return true;
         }
 
         // For Android 4.1+
         @SuppressWarnings("unused")
         public void openFileChooser(ValueCallback<Uri> uploadMsg, String acceptType, String capture) {
-            mViewManager.getPackage().getModule().openFileChooser(uploadMsg, acceptType, capture);
+            getModule().startFileChooserIntent(uploadMsg, acceptType);
         }
 
         // For Android 5.0+
         @SuppressLint("NewApi")
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
-            return mViewManager.getPackage().getModule().showFileChooser(filePathCallback, fileChooserParams.createIntent());
+            return getModule().startFileChooserIntent(filePathCallback, fileChooserParams.createIntent());
         }
     }
 
@@ -146,6 +146,10 @@ class RNWebView extends WebView implements LifecycleEventListener {
 
     public GeoWebChromeClient getGeoClient() {
         return new GeoWebChromeClient();
+    }
+
+    public RNWebViewModule getModule() {
+        return mViewManager.getPackage().getModule();
     }
 
     @Override

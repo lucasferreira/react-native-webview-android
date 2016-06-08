@@ -1,5 +1,5 @@
 # react-native-webview-android
-Simple React Native Android module to use Android's WebView inside your app (with experimental html file upload input support).
+Simple React Native Android module to use Android's WebView inside your app (with experimental html file input support to handle file uploads in forms).
 
 [![npm version](http://img.shields.io/npm/v/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
 [![npm downloads](http://img.shields.io/npm/dm/react-native-webview-android.svg?style=flat-square)](https://npmjs.org/package/react-native-webview-android "View this project on npm")
@@ -122,6 +122,12 @@ var styles = StyleSheet.create({
   }
 });
 ```
+
+## Note about HTML file input (files upload)
+
+This module implements an experimental support to handle file input in HTML forms for upload files. It was tested in some Android versions 4.1+, but it's possible that some device won't work OK with that *new* feature.
+
+![File input demo](http://i.imgur.com/5Fbaxfn.gif)
 
 ## Tips for Video (HTML5) inside WebView
 
