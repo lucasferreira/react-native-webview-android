@@ -3,11 +3,8 @@
  */
 'use strict';
 
-try {
-  var React = require('react');
-} catch(ex) {
-  var React = require('react-native');
-}
+var React, { PropTypes } = require('react');
+var { UIManager, requireNativeComponent } = require('react-native');
 
 var { requireNativeComponent, NativeModules } = require('react-native');
 var RCTUIManager = NativeModules.UIManager;
@@ -16,20 +13,20 @@ var WEBVIEW_REF = 'androidWebView';
 
 var WebViewAndroid = React.createClass({
   propTypes: {
-    url: React.PropTypes.string,
-    source: React.PropTypes.object,
-    baseUrl: React.PropTypes.string,
-    html: React.PropTypes.string,
-    htmlCharset: React.PropTypes.string,
-    userAgent: React.PropTypes.string,
-    injectedJavaScript: React.PropTypes.string,
-    disablePlugins: React.PropTypes.bool,
-    disableCookies: React.PropTypes.bool,
-    javaScriptEnabled: React.PropTypes.bool,
-    geolocationEnabled: React.PropTypes.bool,
-    allowUrlRedirect: React.PropTypes.bool,
-    builtInZoomControls: React.PropTypes.bool,
-    onNavigationStateChange: React.PropTypes.func
+    url: PropTypes.string,
+    source: PropTypes.object,
+    baseUrl: PropTypes.string,
+    html: PropTypes.string,
+    htmlCharset: PropTypes.string,
+    userAgent: PropTypes.string,
+    injectedJavaScript: PropTypes.string,
+    disablePlugins: PropTypes.bool,
+    disableCookies: PropTypes.bool,
+    javaScriptEnabled: PropTypes.bool,
+    geolocationEnabled: PropTypes.bool,
+    allowUrlRedirect: PropTypes.bool,
+    builtInZoomControls: PropTypes.bool,
+    onNavigationStateChange: PropTypes.func
   },
   _onNavigationStateChange: function(event) {
     if (this.props.onNavigationStateChange) {
