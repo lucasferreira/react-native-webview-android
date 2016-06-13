@@ -3,21 +3,15 @@
  */
 'use strict';
 
-try {
-  var React = require('react');
-} catch(ex) {
-  var React = require('react-native');
-}
-
-var { requireNativeComponent, NativeModules } = require('react-native');
-var RCTUIManager = NativeModules.UIManager;
+var React = require('react');
+var { UIManager, requireNativeComponent } = require('react-native');
+var RCTUIManager = UIManager;
 
 var WEBVIEW_REF = 'androidWebView';
 
 var WebViewAndroid = React.createClass({
   propTypes: {
     url: React.PropTypes.string,
-    source: React.PropTypes.object,
     baseUrl: React.PropTypes.string,
     html: React.PropTypes.string,
     htmlCharset: React.PropTypes.string,
@@ -27,7 +21,6 @@ var WebViewAndroid = React.createClass({
     disableCookies: React.PropTypes.bool,
     javaScriptEnabled: React.PropTypes.bool,
     geolocationEnabled: React.PropTypes.bool,
-    allowUrlRedirect: React.PropTypes.bool,
     builtInZoomControls: React.PropTypes.bool,
     onNavigationStateChange: React.PropTypes.func
   },
