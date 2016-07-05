@@ -9,6 +9,8 @@ try {
   var React = require('react-native');
 }
 
+var RN = require("react-native");
+
 var { requireNativeComponent, NativeModules } = require('react-native');
 var RCTUIManager = NativeModules.UIManager;
 
@@ -61,7 +63,7 @@ var WebViewAndroid = React.createClass({
     return <RNWebViewAndroid ref={WEBVIEW_REF} {...this.props} onNavigationStateChange={this._onNavigationStateChange} />;
   },
   _getWebViewHandle: function() {
-    return React.findNodeHandle(this.refs[WEBVIEW_REF]);
+    return RN.findNodeHandle(this.refs[WEBVIEW_REF]);
   },
 });
 
