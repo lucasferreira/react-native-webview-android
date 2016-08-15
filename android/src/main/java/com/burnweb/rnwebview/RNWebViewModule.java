@@ -166,4 +166,6 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
             mUploadMessageArr = null;
         }
     }
+    
+    public void onNewIntent(Intent intent) { }
 }
