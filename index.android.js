@@ -9,7 +9,14 @@ try {
   var React = require('react-native');
 }
 
-var { requireNativeComponent, NativeModules } = require('react-native');
+var {
+  ReactNativeViewAttributes,
+  EdgeInsetsPropType,
+  PropTypes,
+  DeviceEventEmitter,
+  requireNativeComponent,
+  NativeModules
+} = require('react-native');
 var RCTUIManager = NativeModules.UIManager;
 
 var WEBVIEW_REF = 'androidWebView';
@@ -30,6 +37,19 @@ var WebViewAndroid = React.createClass({
     allowUrlRedirect: React.PropTypes.bool,
     builtInZoomControls: React.PropTypes.bool,
     onNavigationStateChange: React.PropTypes.func
+  },
+  componentWillMount: function() {
+    DeviceEventEmitter.addListener("webViewBridgeMessage", (body) => {
+      const { onBridgeMessage } = this.props;
+      const message = body.message;
+      if (onBridgeMessage) {
+        onBridgeMessage(message);
+      }
+    });
+    console.log('DeviceEventEmitter',DeviceEventEmitter);
+    // if (this.props.startInLoadingState) {
+    //   this.setState({viewState: WebViewBridgeState.LOADING});
+    // }
   },
   _onNavigationStateChange: function(event) {
     if (this.props.onNavigationStateChange) {

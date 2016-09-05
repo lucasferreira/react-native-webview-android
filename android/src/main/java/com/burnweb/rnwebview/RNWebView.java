@@ -2,11 +2,15 @@ package com.burnweb.rnwebview;
 
 import android.annotation.SuppressLint;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.SystemClock;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
+import android.webkit.ConsoleMessage;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -14,10 +18,34 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.LifecycleEventListener;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
 import com.facebook.react.uimanager.events.EventDispatcher;
+
+
+/* An instance of this class will be registered as a JavaScript interface */
+class JavascriptBridge {
+    private ReactContext context;
+
+    public JavascriptBridge(ReactContext context) {
+        this.context = context;
+    }
+
+    @JavascriptInterface
+    public void send(String message) {
+        Log.d("JavascriptBridge",message);
+        WritableMap params = Arguments.createMap();
+        params.putString("message", message);
+        context.getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                .emit("webViewBridgeMessage", params);
+    }
+}
 
 class RNWebView extends WebView implements LifecycleEventListener {
 
@@ -59,6 +87,13 @@ class RNWebView extends WebView implements LifecycleEventListener {
         @Override
         public boolean onJsAlert(WebView view, String url, String message, JsResult result) {
             getModule().showAlert(url, message, result);
+            return true;
+        }
+        @Override
+        public boolean onConsoleMessage(ConsoleMessage cm) {
+            Log.d("MyApplication", cm.message() + " -- From line "
+                    + cm.lineNumber() + " of "
+                    + cm.sourceId() );
             return true;
         }
 
@@ -106,6 +141,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
 
         this.setWebViewClient(new EventWebClient());
         this.setWebChromeClient(getCustomClient());
+        this.addJavascriptInterface(new JavascriptBridge((ReactContext)reactContext), "WebViewBridgeAndroid");
     }
 
     public void setCharset(String charset) {
