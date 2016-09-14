@@ -3,7 +3,6 @@ package com.burnweb.rnwebview;
 import android.annotation.SuppressLint;
 
 import android.net.Uri;
-import android.os.SystemClock;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.webkit.GeolocationPermissions;
@@ -14,6 +13,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import com.facebook.react.common.SystemClock;
 import com.facebook.react.bridge.LifecycleEventListener;
 import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.UIManagerModule;
@@ -43,7 +43,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         }
 
         public void onPageFinished(WebView view, String url) {
-            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
+            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.nanoTime(), view.getTitle(), false, url, view.canGoBack(), view.canGoForward()));
 
             if(RNWebView.this.getInjectedJavaScript() != null) {
                 view.loadUrl("javascript:(function() {\n" + RNWebView.this.getInjectedJavaScript() + ";\n})();");
@@ -51,7 +51,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         }
 
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
-            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.uptimeMillis(), view.getTitle(), true, url, view.canGoBack(), view.canGoForward()));
+            mEventDispatcher.dispatchEvent(new NavigationStateChangeEvent(getId(), SystemClock.nanoTime(), view.getTitle(), true, url, view.canGoBack(), view.canGoForward()));
         }
     }
 
