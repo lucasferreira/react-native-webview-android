@@ -195,9 +195,13 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
-        return MapBuilder.of(
-                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
-        );
+        return MapBuilder.<String, Object>builder()
+                .put(NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"))
+                .put(JsToAppEvent.JS_EVENT_NAME, MapBuilder.of("registrationName", "jsToApp"))
+                .build();
+//        return MapBuilder.of(
+//                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
+//        );
     }
 
     @Override
