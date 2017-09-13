@@ -46,7 +46,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         // height being 0.
         rnwv.setLayoutParams(
                 new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
+                        LayoutParams.MATCH_PARENT));
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
 
@@ -172,9 +172,9 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     @Override
     public @Nullable Map<String, Integer> getCommandsMap() {
         return MapBuilder.of(
-            "goBack", GO_BACK,
-            "goForward", GO_FORWARD,
-            "reload", RELOAD
+                "goBack", GO_BACK,
+                "goForward", GO_FORWARD,
+                "reload", RELOAD
         );
     }
 
@@ -195,9 +195,13 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
-        return MapBuilder.of(
-                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
-        );
+        return MapBuilder.<String, Object>builder()
+                .put(NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"))
+                .put(JsToAppEvent.JS_EVENT_NAME, MapBuilder.of("registrationName", "jsToApp"))
+                .build();
+//        return MapBuilder.of(
+//                NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange")
+//        );
     }
 
     @Override
