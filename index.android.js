@@ -31,7 +31,13 @@ var WebViewAndroid = React.createClass({
         geolocationEnabled: React.PropTypes.bool,
         allowUrlRedirect: React.PropTypes.bool,
         builtInZoomControls: React.PropTypes.bool,
-        onNavigationStateChange: React.PropTypes.func
+        onNavigationStateChange: React.PropTypes.func,
+        jsToApp: React.PropTypes.func,
+    },
+    _jsToApp: function(event) {
+        if (this.props.jsToApp) {
+            this.props.jsToApp(event.nativeEvent);
+        }
     },
     _onNavigationStateChange: function(event) {
         if (this.props.onNavigationStateChange) {
