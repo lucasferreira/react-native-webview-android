@@ -7,11 +7,11 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 11
-        versionName "1.1.5"
+        versionCode 15
+        versionName "1.1.11"
     }
 }
 
 dependencies {
-    compile 'com.facebook.react:react-native:0.19.+'
+    compile 'com.facebook.react:react-native:+'
 }

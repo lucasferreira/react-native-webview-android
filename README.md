@@ -31,25 +31,28 @@ dependencies {
 }
 ```
 
-* Register Module - RN >= 0.18 (in MainActivity.java)
+* Register Module - RN >= 0.29 (in MainApplication.java)
 
 ```java
 import com.burnweb.rnwebview.RNWebViewPackage;  // <--- import
 
-public class MainActivity extends ReactActivity {
+public class MainApplication extends Application implements ReactApplication {
   ......
 
   @Override
   protected List<ReactPackage> getPackages() {
     return Arrays.<ReactPackage>asList(
-            new MainReactPackage(),
-            new RNWebViewPackage()); // <------ add this line to your MainActivity class
+        new MainReactPackage(),
+        new RNWebViewPackage()); // <------ add this line to your MainApplication class
   }
 
   ......
 
 }
 ```
+
+If you need to see the install instructions for older React Native versions [look here](https://github.com/lucasferreira/react-native-webview-android/blob/react-native-older/README.md).
+
 
 ## Example
 ```javascript

@@ -45,8 +45,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         // Fixes broken full-screen modals/galleries due to body
         // height being 0.
         rnwv.setLayoutParams(
-                new LayoutParams(LayoutParams.MATCH_PARENT,
-                        LayoutParams.MATCH_PARENT));
+                new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
 
