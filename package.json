@@ -27,5 +27,9 @@
   "bugs": "https://github.com/lucasferreira/react-native-webview-android/issues",
   "peerDependencies": {
     "react-native": ">=0.26"
+  },
+  "dependencies": {
+    "create-react-class": "^15.6.2",
+    "prop-types": "^15.6.0"
   }
 }
