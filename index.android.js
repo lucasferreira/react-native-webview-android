@@ -10,7 +10,7 @@ try {
 }
 
 var createClass = require('create-react-class');
-var PropType = require('prop-types');
+var PropTypes = require('prop-types');
 var RN = require("react-native");
 
 var { requireNativeComponent, NativeModules } = require('react-native');
