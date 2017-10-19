@@ -9,6 +9,8 @@ try {
     var React = require('react-native');
 }
 
+var createClass = require('create-react-class');
+var PropTypes = require('prop-types');
 var RN = require("react-native");
 
 var { requireNativeComponent, NativeModules } = require('react-native');
@@ -16,7 +18,7 @@ var RCTUIManager = NativeModules.UIManager;
 
 var WEBVIEW_REF = 'androidWebView';
 
-var WebViewAndroid = React.createClass({
+var WebViewAndroid = createClass({
   propTypes: {
     url: React.PropTypes.string,
     source: React.PropTypes.object,
