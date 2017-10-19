@@ -4,9 +4,9 @@
 'use strict';
 
 try {
-  var React = require('react');
+    var React = require('react');
 } catch(ex) {
-  var React = require('react-native');
+    var React = require('react-native');
 }
 
 var createClass = require('create-react-class');
@@ -20,21 +20,27 @@ var WEBVIEW_REF = 'androidWebView';
 
 var WebViewAndroid = createClass({
   propTypes: {
-    url: PropTypes.string,
-    source: PropTypes.object,
-    baseUrl: PropTypes.string,
-    html: PropTypes.string,
-    htmlCharset: PropTypes.string,
-    userAgent: PropTypes.string,
-    injectedJavaScript: PropTypes.string,
-    disablePlugins: PropTypes.bool,
-    disableCookies: PropTypes.bool,
-    javaScriptEnabled: PropTypes.bool,
-    geolocationEnabled: PropTypes.bool,
-    allowUrlRedirect: PropTypes.bool,
-    builtInZoomControls: PropTypes.bool,
-    onNavigationStateChange: PropTypes.func
+    url: React.PropTypes.string,
+    source: React.PropTypes.object,
+    baseUrl: React.PropTypes.string,
+    html: React.PropTypes.string,
+    htmlCharset: React.PropTypes.string,
+    userAgent: React.PropTypes.string,
+    injectedJavaScript: React.PropTypes.string,
+    disablePlugins: React.PropTypes.bool,
+    disableCookies: React.PropTypes.bool,
+    javaScriptEnabled: React.PropTypes.bool,
+    geolocationEnabled: React.PropTypes.bool,
+    allowUrlRedirect: React.PropTypes.bool,
+    builtInZoomControls: React.PropTypes.bool,
+    onNavigationStateChange: React.PropTypes.func,
+    jsToApp: React.PropTypes.func,
   },
+    _jsToApp: function(event) {
+        if (this.props.jsToApp) {
+            this.props.jsToApp(event.nativeEvent);
+        }
+    },
   _onNavigationStateChange: function(event) {
     if (this.props.onNavigationStateChange) {
       this.props.onNavigationStateChange(event.nativeEvent);
@@ -62,7 +68,7 @@ var WebViewAndroid = createClass({
     );
   },
   render: function() {
-    return <RNWebViewAndroid ref={WEBVIEW_REF} {...this.props} onNavigationStateChange={this._onNavigationStateChange} />;
+    return <RNWebViewAndroid ref={WEBVIEW_REF} {...this.props} onNavigationStateChange={this._onNavigationStateChange} jsToApp={this._jsToApp}/>;
   },
   _getWebViewHandle: function() {
     return RN.findNodeHandle(this.refs[WEBVIEW_REF]);

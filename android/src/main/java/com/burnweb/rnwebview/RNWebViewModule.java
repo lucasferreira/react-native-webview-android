@@ -60,14 +60,14 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
 
     public void showAlert(String url, String message, final JsResult result) {
         AlertDialog ad = new AlertDialog.Builder(getCurrentActivity())
-                                .setMessage(message)
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        result.confirm();
-                                    }
-                                })
-                                .create();
+                .setMessage(message)
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        result.confirm();
+                    }
+                })
+                .create();
 
         ad.show();
     }

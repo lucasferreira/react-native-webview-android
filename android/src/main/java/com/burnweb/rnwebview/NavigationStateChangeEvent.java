@@ -17,7 +17,7 @@ public class NavigationStateChangeEvent extends Event<NavigationStateChangeEvent
 
     public NavigationStateChangeEvent(int viewId, long timestampMs, String title, boolean isLoading, String url, boolean canGoBack, boolean canGoForward) {
         super(viewId);
-
+      
         mTitle = title;
         mIsLoading = isLoading;
         mUrl = url;
