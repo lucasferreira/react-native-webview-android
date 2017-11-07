@@ -84,13 +84,26 @@ var WebViewAndroidExample = React.createClass({
       };
     },
     goBack: function() {
-      this.refs.webViewAndroidSample.goBack(); // you can use this callbacks to control webview
+      // you can use this callback to control web view
+      this.refs.webViewAndroidSample.goBack();
     },
     goForward: function() {
       this.refs.webViewAndroidSample.goForward();
     },
     reload: function() {
       this.refs.webViewAndroidSample.reload();
+    },
+    stopLoading: function() {
+      // stops the current load
+      this.refs.webViewAndroidSample.stopLoading();
+    },
+    postMessage: function(data) {
+      // posts a message to web view
+      this.refs.webViewAndroidSample.postMessage(data);
+    },
+    injectJavaScript: function(script) {
+      // executes JavaScript immediately in web view
+      this.refs.webViewAndroidSample.injectJavaScript(script);
     },
     onNavigationStateChange: function(event) {
       console.log(event);
