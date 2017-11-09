@@ -3,15 +3,10 @@
  */
 'use strict';
 
-try {
-  var React = require('react');
-} catch(ex) {
-  var React = require('react-native');
-}
-
+var React = require('react');
+var RN = require("react-native");
 var createClass = require('create-react-class');
 var PropTypes = require('prop-types');
-var RN = require("react-native");
 
 var { requireNativeComponent, NativeModules } = require('react-native');
 var RCTUIManager = NativeModules.UIManager;
