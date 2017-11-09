@@ -61,6 +61,27 @@ var WebViewAndroid = createClass({
       null
     );
   },
+  stopLoading: function() {
+    RCTUIManager.dispatchViewManagerCommand(
+      this.getWebViewHandle(),
+      RCTUIManager.RNWebViewAndroid.Commands.stopLoading,
+      null
+    );
+  },
+  postMessage: function(data) {
+    RCTUIManager.dispatchViewManagerCommand(
+      this.getWebViewHandle(),
+      RCTUIManager.RNWebViewAndroid.Commands.postMessage,
+      [String(data)]
+    );
+  },
+  injectJavaScript: function(data) {
+    RCTUIManager.dispatchViewManagerCommand(
+      this._getWebViewHandle(),
+      RCTUIManager.RNWebViewAndroid.Commands.injectJavaScript,
+      [data]
+    );
+  },
   render: function() {
     return <RNWebViewAndroid ref={WEBVIEW_REF} {...this.props} onNavigationStateChange={this._onNavigationStateChange} />;
   },

@@ -19,11 +19,17 @@ import com.facebook.react.uimanager.ThemedReactContext;
 import com.facebook.react.uimanager.annotations.ReactProp;
 import com.facebook.react.common.annotations.VisibleForTesting;
 
+import org.json.JSONObject;
+import org.json.JSONException;
+
 public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     public static final int GO_BACK = 1;
     public static final int GO_FORWARD = 2;
     public static final int RELOAD = 3;
+    public static final int STOP_LOADING = 4;
+    public static final int POST_MESSAGE = 5;
+    public static final int INJECT_JAVASCRIPT = 6;
 
     private static final String HTML_MIME_TYPE = "text/html";
 
@@ -174,7 +180,10 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         return MapBuilder.of(
             "goBack", GO_BACK,
             "goForward", GO_FORWARD,
-            "reload", RELOAD
+            "reload", RELOAD,
+            "stopLoading", STOP_LOADING,
+            "postMessage", POST_MESSAGE,
+            "injectJavaScript", INJECT_JAVASCRIPT
         );
     }
 
@@ -189,6 +198,31 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
                 break;
             case RELOAD:
                 view.reload();
+                break;
+            case STOP_LOADING:
+                view.stopLoading();
+                break;
+            case POST_MESSAGE:
+                try {
+                  JSONObject eventInitDict = new JSONObject();
+                  eventInitDict.put("data", args.getString(0));
+                  view.loadUrl("javascript:(function () {" +
+                    "var event;" +
+                    "var data = " + eventInitDict.toString() + ";" +
+                    "try {" +
+                      "event = new MessageEvent('message', data);" +
+                    "} catch (e) {" +
+                      "event = document.createEvent('MessageEvent');" +
+                      "event.initMessageEvent('message', true, true, data.data, data.origin, data.lastEventId, data.source);" +
+                    "}" +
+                    "document.dispatchEvent(event);" +
+                  "})();");
+                } catch (JSONException e) {
+                  throw new RuntimeException(e);
+                }
+                break;
+            case INJECT_JAVASCRIPT:
+                view.loadUrl("javascript:" + args.getString(0));
                 break;
         }
     }
@@ -206,5 +240,4 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
         ((ThemedReactContext) webView.getContext()).removeLifecycleEventListener(webView);
     }
-
 }
