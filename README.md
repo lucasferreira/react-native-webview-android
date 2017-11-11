@@ -126,6 +126,51 @@ var styles = StyleSheet.create({
 });
 ```
 
+### js call app
+
+```javascript
+// call 'jsToApp' in js
+<!DOCTYPE html>
+<html lang="en" xmlns:height="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Carson</title>
+    <script>
+        function jsToApp(){
+            try {
+                  window.app.jsToApp("hello,app!!!");
+            } catch(e) {
+                 console.log("js to app erro");
+            }
+        }
+    </script>
+</head>
+<body>
+<button type="button" id="button1" onclick="jsToApp()" >try to click me </button>
+</body>
+</html>
+```
+```javascript
+<WebViewAndroid
+  javaScriptEnabled={true}
+  domStorageEnabled={true}
+  scalesPageToFit={true}
+  startInLoadingState={true}
+  geolocationEnabled={false}
+  builtInZoomControls={false}
+  decelerationRate="normal"
+  automaticallyAdjustContentInsets={false}
+  url={url}
+  style={styles.base}
+  jsToApp={this._jsToApp.bind(this)}
+/>
+
+_jsToApp(params) {
+  // do something
+  // alert("_jsToApp");
+}
+```
+
 ## Note about HTML file input (files upload)
 
 This module implements an experimental support to handle file input in HTML forms for upload files. It was tested in some Android versions 4.1+, but it's possible that some device won't work OK with that *new* feature.
