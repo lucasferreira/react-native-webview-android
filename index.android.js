@@ -58,14 +58,14 @@ var WebViewAndroid = createClass({
   },
   stopLoading: function() {
     RCTUIManager.dispatchViewManagerCommand(
-      this.getWebViewHandle(),
+      this._getWebViewHandle(),
       RCTUIManager.RNWebViewAndroid.Commands.stopLoading,
       null
     );
   },
   postMessage: function(data) {
     RCTUIManager.dispatchViewManagerCommand(
-      this.getWebViewHandle(),
+      this._getWebViewHandle(),
       RCTUIManager.RNWebViewAndroid.Commands.postMessage,
       [String(data)]
     );
