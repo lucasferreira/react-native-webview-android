@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.webkit.GeolocationPermissions;
+import android.webkit.JavascriptInterface;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -106,6 +107,8 @@ class RNWebView extends WebView implements LifecycleEventListener {
 
         this.setWebViewClient(new EventWebClient());
         this.setWebChromeClient(getCustomClient());
+
+        this.addJavascriptInterface(RNWebView.this, "body");
     }
 
     public void setCharset(String charset) {
@@ -173,4 +176,8 @@ class RNWebView extends WebView implements LifecycleEventListener {
         super.onDetachedFromWindow();
     }
 
+    @JavascriptInterface
+     public void onMessageEvent(String jsParamaters) {
+        mEventDispatcher.dispatchEvent(new MessageEvent(getId(), jsParamaters));
+    }
 }
