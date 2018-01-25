@@ -7,7 +7,7 @@ import com.facebook.react.uimanager.events.RCTEventEmitter;
 
 public class MessageEvent extends Event<MessageEvent> {
 
-    public static final String EVENT_NAME = "MESSAGE_TO_REACT";
+    public static final String EVENT_NAME = "messageEvent";
 
     private final String message;
 
