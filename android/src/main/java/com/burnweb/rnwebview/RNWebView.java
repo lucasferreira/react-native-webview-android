@@ -108,7 +108,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         this.setWebViewClient(new EventWebClient());
         this.setWebChromeClient(getCustomClient());
 
-        this.addJavascriptInterface(RNWebView.this, "app");
+        this.addJavascriptInterface(RNWebView.this, "webView");
     }
 
     public void setCharset(String charset) {
@@ -177,7 +177,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
     }
 
     @JavascriptInterface
-     public void onMessageEvent(String jsParamaters) {
+     public void postMessage(String jsParamaters) {
         mEventDispatcher.dispatchEvent(new MessageEvent(getId(), jsParamaters));
     }
 }
