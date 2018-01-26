@@ -81,6 +81,7 @@ var WebViewAndroidExample = React.createClass({
         backButtonEnabled: false,
         forwardButtonEnabled: false,
         loading: true,
+        messageFromWebView: null
       };
     },
     goBack: function() {
@@ -116,6 +117,23 @@ var WebViewAndroidExample = React.createClass({
         loading: event.loading
       });
     },
+    onMessage: function(event) {
+      this.setState({
+        messageFromWebView: event.message
+      });
+    },
+    javascriptToInject: function () {
+      return `
+        $(document).ready(function() {
+          $('a').click(function(event) {
+            if ($(this).attr('href')) {
+              var href = $(this).attr('href');
+              window.webView.postMessage('Link tapped: ' + href);
+            }
+          })
+        })
+      `
+    },
     render: function() {
       return (
         <WebViewAndroid
@@ -123,7 +141,9 @@ var WebViewAndroidExample = React.createClass({
           javaScriptEnabled={true}
           geolocationEnabled={false}
           builtInZoomControls={false}
+          injectedJavaScript={this.getJavascript()}
           onNavigationStateChange={this.onNavigationStateChange}
+          onMessage={this.onMessage}
           url={SITE_URL} // or use the source(object) attribute...
           style={styles.containerWebView} />
       );
