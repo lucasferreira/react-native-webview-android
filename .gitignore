@@ -1,5 +1,23 @@
 *.class
 
+# OSX
+#
+.DS_Store
+
+# node.js
+#
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Android/IntelliJ
+#
+build/
+.idea
+.gradle
+local.properties
+*.iml
+
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
@@ -11,6 +29,3 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-.DS_Store
-
-node_modules
