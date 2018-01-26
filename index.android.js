@@ -89,7 +89,7 @@ var WebViewAndroid = createClass({
         ref={WEBVIEW_REF} 
         {...this.props} 
         onNavigationStateChange={this._onNavigationStateChange} 
-        onMessage={this._onMessage} 
+        onMessageEvent={this._onMessage} 
       />
     );
   },
