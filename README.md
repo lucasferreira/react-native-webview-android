@@ -106,6 +106,17 @@ var WebViewAndroidExample = React.createClass({
       // executes JavaScript immediately in web view
       this.refs.webViewAndroidSample.injectJavaScript(script);
     },
+    onShouldStartLoadWithRequest: function(event) {
+      // currently only url & navigationState are returned in the event.
+      console.log(event.url);
+      console.log(event.navigationState);
+
+      if (event.url === 'https://www.mywebsiteexample.com/') {
+        return true;
+      } else {
+        return false;
+      }
+    },
     onNavigationStateChange: function(event) {
       console.log(event);
 
@@ -142,6 +153,7 @@ var WebViewAndroidExample = React.createClass({
           geolocationEnabled={false}
           builtInZoomControls={false}
           injectedJavaScript={this.javascriptToInject()}
+          onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
           onNavigationStateChange={this.onNavigationStateChange}
           onMessage={this.onMessage}
           url={SITE_URL} // or use the source(object) attribute...
@@ -158,6 +170,10 @@ var styles = StyleSheet.create({
   }
 });
 ```
+
+## Note about onShouldStartLoadWithRequest
+
+This module has a working implementation of onShouldStartLoadWithRequest. However, the event it returns currently only includes `url` and `navigationState`.
 
 ## Note about HTML file input (files upload)
 
