@@ -30,6 +30,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     public static final int STOP_LOADING = 4;
     public static final int POST_MESSAGE = 5;
     public static final int INJECT_JAVASCRIPT = 6;
+    public static final int SHOULD_OVERRIDE_WITH_RESULT = 7;
 
     private static final String HTML_MIME_TYPE = "text/html";
 
@@ -183,7 +184,8 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
             "reload", RELOAD,
             "stopLoading", STOP_LOADING,
             "postMessage", POST_MESSAGE,
-            "injectJavaScript", INJECT_JAVASCRIPT
+            "injectJavaScript", INJECT_JAVASCRIPT,
+            "shouldOverrideWithResult", SHOULD_OVERRIDE_WITH_RESULT
         );
     }
 
@@ -224,6 +226,9 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
             case INJECT_JAVASCRIPT:
                 view.loadUrl("javascript:" + args.getString(0));
                 break;
+            case SHOULD_OVERRIDE_WITH_RESULT:
+                view.shouldOverrideWithResult(view, args);
+                break;
         }
     }
 
@@ -232,6 +237,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         return MapBuilder.<String, Object>builder()
             .put(NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"))
             .put(MessageEvent.EVENT_NAME, MapBuilder.of("registrationName", "onMessageEvent"))
+            .put(ShouldOverrideUrlLoadingEvent.EVENT_NAME, MapBuilder.of("registrationName", "onShouldOverrideUrlLoading"))
             .build();
     }
 
