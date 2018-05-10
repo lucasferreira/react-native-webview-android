@@ -1,17 +1,17 @@
 /**
  * @providesModule WebViewAndroid
  */
-'use strict';
+"use strict";
 
-var React = require('react');
+var React = require("react");
 var RN = require("react-native");
-var createClass = require('create-react-class');
-var PropTypes = require('prop-types');
+var createClass = require("create-react-class");
+var PropTypes = require("prop-types");
 
-var { requireNativeComponent, NativeModules } = require('react-native');
+var { requireNativeComponent, NativeModules } = require("react-native");
 var RCTUIManager = NativeModules.UIManager;
 
-var WEBVIEW_REF = 'androidWebView';
+var WEBVIEW_REF = "androidWebView";
 
 var WebViewAndroid = createClass({
   propTypes: {
@@ -52,7 +52,7 @@ var WebViewAndroid = createClass({
     RCTUIManager.dispatchViewManagerCommand(
       this._getWebViewHandle(),
       RCTUIManager.RNWebViewAndroid.Commands.shouldOverrideWithResult,
-      [shouldOverride],
+      [shouldOverride]
     );
   },
   goBack: function() {
@@ -113,6 +113,6 @@ var WebViewAndroid = createClass({
   },
 });
 
-var RNWebViewAndroid = requireNativeComponent('RNWebViewAndroid', null);
+var RNWebViewAndroid = requireNativeComponent("RNWebViewAndroid", null);
 
 module.exports = WebViewAndroid;

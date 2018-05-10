@@ -1,6 +1,6 @@
 {
   "name": "react-native-webview-android",
-  "version": "1.1.15",
+  "version": "1.1.16",
   "description": "Simple React Native Android module to use Android's WebView inside your app",
   "main": "index",
   "scripts": {
@@ -26,7 +26,7 @@
   "repository": "https://github.com/lucasferreira/react-native-webview-android",
   "bugs": "https://github.com/lucasferreira/react-native-webview-android/issues",
   "peerDependencies": {
-    "react-native": ">=0.26"
+    "react-native": "*"
   },
   "dependencies": {
     "create-react-class": "^15.6.2",
