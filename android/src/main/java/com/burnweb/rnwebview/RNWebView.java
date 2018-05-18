@@ -97,6 +97,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
         }
     }
 
@@ -109,7 +110,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
         this.getSettings().setDomStorageEnabled(true);
-        this.getSettings().setGeolocationEnabled(false);
+        this.getSettings().setGeolocationEnabled(true);
         this.getSettings().setPluginState(WebSettings.PluginState.ON);
         this.getSettings().setAllowFileAccess(true);
         this.getSettings().setAllowFileAccessFromFileURLs(true);
@@ -123,7 +124,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         }
 
         this.setWebViewClient(new EventWebClient());
-        this.setWebChromeClient(getCustomClient());
+        this.setWebChromeClient(getGeoClient());
 
         this.addJavascriptInterface(RNWebView.this, BRIDGE_NAME);
     }

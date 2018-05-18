@@ -2,10 +2,14 @@ forked from [react-native-webview-android](https://github.com/lucasferreira/reac
 
 背景
 - 官方的 WebView 不支持 `<input type="file"/>`。这不是官方的错，选择相册要Android去实现。
-- `react-native-web-android` 支持了 `<input type="file"/>`，但使用方法和官方有区别。比如在网页内官方是 window.postMessage，它是 window.webView.postMessage。比如在RN内 e.nativeEvent.data，它是 e.message。
+- `react-native-web-android` 支持了 RN 和 webView 通信，但使用方法和官方有区别。比如在网页内官方是 window.postMessage，它是 window.webView.postMessage。比如在RN内 e.nativeEvent.data，它是 e.message。
+- `react-native-web-android` 不支持定位，也没的配置。
 - `react-native-web-android` 的文档对 `android/setting.gradle` 的代码添加是错误的，坑爹。
 
-估造了个轮子
+估造了个轮子，支持
+- input type file
+- RN和Web通信
+- 定位
 
 ### Installation
 

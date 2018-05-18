@@ -1,6 +1,6 @@
 {
   "name": "react-native-gm-webview",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "React Native Webview。onMessage postMessage work。input file work",
   "main": "index",
   "scripts": {
