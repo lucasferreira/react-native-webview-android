@@ -30,6 +30,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
     private String baseUrl = "file:///";
     private String injectedJavaScript = null;
     private boolean allowUrlRedirect = false;
+    private String BRIDGE_NAME = "__REACT_WEB_VIEW_BRIDGE";
 
     private String currentUrl = "";
     private String shouldOverrideUrlLoadingUrl = "";
@@ -56,6 +57,15 @@ class RNWebView extends WebView implements LifecycleEventListener {
             if(RNWebView.this.getInjectedJavaScript() != null) {
                 view.loadUrl("javascript:(function() {\n" + RNWebView.this.getInjectedJavaScript() + ";\n})();");
             }
+
+            view.loadUrl(
+                "javascript:(" +
+                    "window.originalPostMessage = window.postMessage," +
+                    "window.postMessage = function(data) {" +
+                        BRIDGE_NAME + ".postMessage(String(data));" +
+                    "}" +
+                ")"
+            );
         }
 
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -115,7 +125,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         this.setWebViewClient(new EventWebClient());
         this.setWebChromeClient(getCustomClient());
 
-        this.addJavascriptInterface(RNWebView.this, "webView");
+        this.addJavascriptInterface(RNWebView.this, BRIDGE_NAME);
     }
 
     public void setCharset(String charset) {
