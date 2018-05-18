@@ -1,6 +1,6 @@
 {
   "name": "react-native-gm-webview",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "React Native Webview。onMessage postMessage work。input file work",
   "main": "index",
   "scripts": {
@@ -18,7 +18,10 @@
   ],
   "author": "gmfe",
   "license": "MIT",
-  "repository": "https://github.com/gmfe/react-native-gm-webview",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gmfe/react-native-gm-webview"
+  },
   "bugs": "https://github.com/gmfe/react-native-gm-webview",
   "peerDependencies": {
     "react-native": "*"
