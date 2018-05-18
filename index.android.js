@@ -34,19 +34,19 @@ var WebViewAndroid = createClass({
   },
   _onNavigationStateChange: function(event) {
     if (this.props.onNavigationStateChange) {
-      this.props.onNavigationStateChange(event.nativeEvent);
+      this.props.onNavigationStateChange(event);
     }
   },
   _onMessage: function(event) {
     if (this.props.onMessage) {
-      this.props.onMessage(event.nativeEvent);
+      this.props.onMessage(event);
     }
   },
   _onShouldOverrideUrlLoading: function(event) {
     let shouldOverride = false;
 
     if (this.props.onShouldStartLoadWithRequest) {
-      shouldOverride = !this.props.onShouldStartLoadWithRequest(event.nativeEvent);
+      shouldOverride = !this.props.onShouldStartLoadWithRequest(event);
     }
 
     RCTUIManager.dispatchViewManagerCommand(
