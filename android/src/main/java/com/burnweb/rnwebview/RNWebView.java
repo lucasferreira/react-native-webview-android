@@ -2,6 +2,7 @@ package com.burnweb.rnwebview;
 
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -38,6 +39,14 @@ class RNWebView extends WebView implements LifecycleEventListener {
     protected class EventWebClient extends WebViewClient {
         public boolean shouldOverrideUrlLoading(WebView view, String url){
             int navigationType = 0;
+
+            //a标签-->href='tel:'，拨打电话
+            if (url.startsWith("tel:")) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                view.getContext().startActivity(intent);
+                view.reload();
+                return true;
+            }
 
             if (currentUrl.equals(url) || url.equals("about:blank")) { // for regular .reload() and html reload.
                 navigationType = 3;
