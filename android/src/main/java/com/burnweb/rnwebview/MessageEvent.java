@@ -29,7 +29,7 @@ public class MessageEvent extends Event<MessageEvent> {
 
     private WritableMap serializeEventData() {
         WritableMap eventData = Arguments.createMap();
-        eventData.putString("message", this.message);
+        eventData.putString("data", this.message);
 
         return eventData;
     }

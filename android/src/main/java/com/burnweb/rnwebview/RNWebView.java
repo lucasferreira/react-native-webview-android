@@ -2,6 +2,7 @@ package com.burnweb.rnwebview;
 
 import android.annotation.SuppressLint;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -30,6 +31,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
     private String baseUrl = "file:///";
     private String injectedJavaScript = null;
     private boolean allowUrlRedirect = false;
+    private String BRIDGE_NAME = "__REACT_WEB_VIEW_BRIDGE";
 
     private String currentUrl = "";
     private String shouldOverrideUrlLoadingUrl = "";
@@ -37,6 +39,14 @@ class RNWebView extends WebView implements LifecycleEventListener {
     protected class EventWebClient extends WebViewClient {
         public boolean shouldOverrideUrlLoading(WebView view, String url){
             int navigationType = 0;
+
+            //a标签-->href='tel:'，拨打电话
+            if (url.startsWith("tel:")) {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+                view.getContext().startActivity(intent);
+                view.reload();
+                return true;
+            }
 
             if (currentUrl.equals(url) || url.equals("about:blank")) { // for regular .reload() and html reload.
                 navigationType = 3;
@@ -56,6 +66,15 @@ class RNWebView extends WebView implements LifecycleEventListener {
             if(RNWebView.this.getInjectedJavaScript() != null) {
                 view.loadUrl("javascript:(function() {\n" + RNWebView.this.getInjectedJavaScript() + ";\n})();");
             }
+
+            view.loadUrl(
+                "javascript:(" +
+                    "window.originalPostMessage = window.postMessage," +
+                    "window.postMessage = function(data) {" +
+                        BRIDGE_NAME + ".postMessage(String(data));" +
+                    "}" +
+                ")"
+            );
         }
 
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
@@ -87,6 +106,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         @Override
         public void onGeolocationPermissionsShowPrompt(String origin, GeolocationPermissions.Callback callback) {
             callback.invoke(origin, true, false);
+            super.onGeolocationPermissionsShowPrompt(origin, callback);
         }
     }
 
@@ -99,7 +119,7 @@ class RNWebView extends WebView implements LifecycleEventListener {
         this.getSettings().setJavaScriptEnabled(true);
         this.getSettings().setBuiltInZoomControls(false);
         this.getSettings().setDomStorageEnabled(true);
-        this.getSettings().setGeolocationEnabled(false);
+        this.getSettings().setGeolocationEnabled(true);
         this.getSettings().setPluginState(WebSettings.PluginState.ON);
         this.getSettings().setAllowFileAccess(true);
         this.getSettings().setAllowFileAccessFromFileURLs(true);
@@ -113,9 +133,9 @@ class RNWebView extends WebView implements LifecycleEventListener {
         }
 
         this.setWebViewClient(new EventWebClient());
-        this.setWebChromeClient(getCustomClient());
+        this.setWebChromeClient(getGeoClient());
 
-        this.addJavascriptInterface(RNWebView.this, "webView");
+        this.addJavascriptInterface(RNWebView.this, BRIDGE_NAME);
     }
 
     public void setCharset(String charset) {
