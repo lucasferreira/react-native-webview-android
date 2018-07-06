@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+import android.os.Build;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
@@ -31,6 +32,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     public static final int POST_MESSAGE = 5;
     public static final int INJECT_JAVASCRIPT = 6;
     public static final int SHOULD_OVERRIDE_WITH_RESULT = 7;
+    public static final int EVALUATE_JAVASCRIPT = 8;
 
     private static final String HTML_MIME_TYPE = "text/html";
 
@@ -53,9 +55,13 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         // height being 0.
         rnwv.setLayoutParams(
                 new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT));
+                        LayoutParams.MATCH_PARENT));
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            CookieManager.getInstance().setAcceptThirdPartyCookies(rnwv, true);
+        }
 
         return rnwv;
     }
@@ -75,7 +81,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @ReactProp(name = "disableCookies", defaultBoolean = false)
     public void setDisableCookies(RNWebView view, boolean disableCookies) {
-        if(disableCookies) {
+        if (disableCookies) {
             CookieManager.getInstance().setAcceptCookie(false);
             CookieManager.getInstance().setAcceptFileSchemeCookies(false);
         } else {
@@ -86,7 +92,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @ReactProp(name = "disablePlugins", defaultBoolean = false)
     public void setDisablePlugins(RNWebView view, boolean disablePlugins) {
-        if(disablePlugins) {
+        if (disablePlugins) {
             view.getSettings().setPluginState(WebSettings.PluginState.OFF);
         } else {
             view.getSettings().setPluginState(WebSettings.PluginState.ON);
@@ -102,10 +108,9 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     public void setGeolocationEnabled(RNWebView view, boolean geolocationEnabled) {
         view.getSettings().setGeolocationEnabled(geolocationEnabled);
 
-        if(geolocationEnabled) {
+        if (geolocationEnabled) {
             view.setWebChromeClient(view.getGeoClient());
-        }
-        else {
+        } else {
             view.setWebChromeClient(view.getCustomClient());
         }
     }
@@ -117,7 +122,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @ReactProp(name = "userAgent")
     public void setUserAgent(RNWebView view, @Nullable String userAgent) {
-        if(userAgent != null) view.getSettings().setUserAgentString(userAgent);
+        if (userAgent != null) view.getSettings().setUserAgentString(userAgent);
     }
 
     @ReactProp(name = "url")
@@ -163,7 +168,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
 
     @ReactProp(name = "htmlCharset")
     public void setHtmlCharset(RNWebView view, @Nullable String htmlCharset) {
-        if(htmlCharset != null) view.setCharset(htmlCharset);
+        if (htmlCharset != null) view.setCharset(htmlCharset);
     }
 
     @ReactProp(name = "html")
@@ -177,16 +182,20 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     }
 
     @Override
-    public @Nullable Map<String, Integer> getCommandsMap() {
-        return MapBuilder.of(
-            "goBack", GO_BACK,
-            "goForward", GO_FORWARD,
-            "reload", RELOAD,
-            "stopLoading", STOP_LOADING,
-            "postMessage", POST_MESSAGE,
-            "injectJavaScript", INJECT_JAVASCRIPT,
-            "shouldOverrideWithResult", SHOULD_OVERRIDE_WITH_RESULT
+    public @Nullable
+    Map<String, Integer> getCommandsMap() {
+        Map<String, Integer> map = MapBuilder.of(
+                "goBack", GO_BACK,
+                "goForward", GO_FORWARD,
+                "reload", RELOAD,
+                "stopLoading", STOP_LOADING,
+                "postMessage", POST_MESSAGE,
+                "injectJavaScript", INJECT_JAVASCRIPT,
+                "shouldOverrideWithResult", SHOULD_OVERRIDE_WITH_RESULT
         );
+        map.put("evaluateJavascript", EVALUATE_JAVASCRIPT);
+
+        return map;
     }
 
     @Override
@@ -206,21 +215,21 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
                 break;
             case POST_MESSAGE:
                 try {
-                  JSONObject eventInitDict = new JSONObject();
-                  eventInitDict.put("data", args.getString(0));
-                  view.loadUrl("javascript:(function () {" +
-                    "var event;" +
-                    "var data = " + eventInitDict.toString() + ";" +
-                    "try {" +
-                      "event = new MessageEvent('message', data);" +
-                    "} catch (e) {" +
-                      "event = document.createEvent('MessageEvent');" +
-                      "event.initMessageEvent('message', true, true, data.data, data.origin, data.lastEventId, data.source);" +
-                    "}" +
-                    "document.dispatchEvent(event);" +
-                  "})();");
+                    JSONObject eventInitDict = new JSONObject();
+                    eventInitDict.put("data", args.getString(0));
+                    view.loadUrl("javascript:(function () {" +
+                            "var event;" +
+                            "var data = " + eventInitDict.toString() + ";" +
+                            "try {" +
+                            "event = new MessageEvent('message', data);" +
+                            "} catch (e) {" +
+                            "event = document.createEvent('MessageEvent');" +
+                            "event.initMessageEvent('message', true, true, data.data, data.origin, data.lastEventId, data.source);" +
+                            "}" +
+                            "document.dispatchEvent(event);" +
+                            "})();");
                 } catch (JSONException e) {
-                  throw new RuntimeException(e);
+                    throw new RuntimeException(e);
                 }
                 break;
             case INJECT_JAVASCRIPT:
@@ -229,16 +238,21 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
             case SHOULD_OVERRIDE_WITH_RESULT:
                 view.shouldOverrideWithResult(view, args);
                 break;
+            case EVALUATE_JAVASCRIPT:
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                    view.evaluateJavascript(args.getString(0), null);
+                }
+                break;
         }
     }
 
     @Override
     public Map getExportedCustomDirectEventTypeConstants() {
         return MapBuilder.<String, Object>builder()
-            .put(NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"))
-            .put(MessageEvent.EVENT_NAME, MapBuilder.of("registrationName", "onMessageEvent"))
-            .put(ShouldOverrideUrlLoadingEvent.EVENT_NAME, MapBuilder.of("registrationName", "onShouldOverrideUrlLoading"))
-            .build();
+                .put(NavigationStateChangeEvent.EVENT_NAME, MapBuilder.of("registrationName", "onNavigationStateChange"))
+                .put(MessageEvent.EVENT_NAME, MapBuilder.of("registrationName", "onMessageEvent"))
+                .put(ShouldOverrideUrlLoadingEvent.EVENT_NAME, MapBuilder.of("registrationName", "onShouldOverrideUrlLoading"))
+                .build();
     }
 
     @Override
