@@ -102,6 +102,10 @@ var WebViewAndroidExample = React.createClass({
       // posts a message to web view
       this.refs.webViewAndroidSample.postMessage(data);
     },
+    evaluateJavascript: function(data) {
+      // evaluates javascript directly on the webview instance
+      this.refs.webViewAndroidSample.evaluateJavascript(data);
+    },
     injectJavaScript: function(script) {
       // executes JavaScript immediately in web view
       this.refs.webViewAndroidSample.injectJavaScript(script);

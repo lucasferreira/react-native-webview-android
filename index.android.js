@@ -31,6 +31,7 @@ var WebViewAndroid = createClass({
     onNavigationStateChange: PropTypes.func,
     onMessage: PropTypes.func,
     onShouldStartLoadWithRequest: PropTypes.func,
+    evaluateJavascript: PropTypes.string
   },
   _onNavigationStateChange: function(event) {
     if (this.props.onNavigationStateChange) {
@@ -81,6 +82,13 @@ var WebViewAndroid = createClass({
       this._getWebViewHandle(),
       RCTUIManager.RNWebViewAndroid.Commands.stopLoading,
       null
+    );
+  },
+  evaluateJavascript: function(data) {
+    RCTUIManager.dispatchViewManagerCommand(
+      this._getWebViewHandle(),
+      RCTUIManager.RNWebViewAndroid.Commands.evaluateJavascript,
+      [String(data)]
     );
   },
   postMessage: function(data) {
