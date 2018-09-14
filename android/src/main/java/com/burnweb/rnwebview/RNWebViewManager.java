@@ -181,6 +181,11 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         view.setInjectedJavaScript(injectedJavaScript);
     }
 
+    @ReactProp(name = "useWideViewPort", defaultBoolean = false)
+    public void setUseWideViewPort(RNWebView view, boolean useWideViewPort) {
+        view.getSettings().setUseWideViewPort(useWideViewPort);
+    }
+
     @Override
     public @Nullable
     Map<String, Integer> getCommandsMap() {
