@@ -156,6 +156,7 @@ var WebViewAndroidExample = React.createClass({
           javaScriptEnabled={true}
           geolocationEnabled={false}
           builtInZoomControls={false}
+          userAgent="customUserAgent"
           injectedJavaScript={this.javascriptToInject()}
           onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
           onNavigationStateChange={this.onNavigationStateChange}
