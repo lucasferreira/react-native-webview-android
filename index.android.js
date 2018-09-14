@@ -84,13 +84,6 @@ var WebViewAndroid = createClass({
       null
     );
   },
-  evaluateJavascript: function(data) {
-    RCTUIManager.dispatchViewManagerCommand(
-      this._getWebViewHandle(),
-      RCTUIManager.RNWebViewAndroid.Commands.evaluateJavascript,
-      [String(data)]
-    );
-  },
   postMessage: function(data) {
     RCTUIManager.dispatchViewManagerCommand(
       this._getWebViewHandle(),
@@ -104,6 +97,9 @@ var WebViewAndroid = createClass({
       RCTUIManager.RNWebViewAndroid.Commands.injectJavaScript,
       [data]
     );
+  },
+  evaluateJavascript: function(data) {
+    return NativeModules.RNWebViewAndroidModule.evaluateJavascript(data, this._getWebViewHandle());
   },
   render: function() {
     return (

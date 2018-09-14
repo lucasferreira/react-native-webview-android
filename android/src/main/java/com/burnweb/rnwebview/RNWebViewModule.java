@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
@@ -19,6 +20,16 @@ import android.webkit.WebChromeClient;
 import com.facebook.react.bridge.ActivityEventListener;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.Promise;
+import com.facebook.react.bridge.ReactMethod;
+
+import com.facebook.react.uimanager.UIManagerModule;
+import com.facebook.react.uimanager.UIBlock;
+import com.facebook.react.uimanager.NativeViewHierarchyManager;
+
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
+import java.io.StringReader;
 
 public class RNWebViewModule extends ReactContextBaseJavaModule implements ActivityEventListener {
 
@@ -170,5 +181,62 @@ public class RNWebViewModule extends ReactContextBaseJavaModule implements Activ
     }
 
     public void onNewIntent(Intent intent) {}
+
+    public interface RNWebViewHandler {
+        void handle(RNWebView result);
+    }
+
+    @ReactMethod
+    public void evaluateJavascript(final String data, final int viewId, final Promise promise) {
+        withRNWebView(viewId, promise, new RNWebViewHandler() {
+            @Override
+            public void handle(RNWebView view) {
+                view.evaluateJavascript(data, new ValueCallback<String>() {
+                    @Override
+                    public void onReceiveValue(String value) {
+                        JsonReader reader = new JsonReader(new StringReader(value));
+
+                        reader.setLenient(true);
+
+                        try {
+                            if(reader.peek() != JsonToken.NULL && reader.peek() == JsonToken.STRING) {
+                                String msg = reader.nextString();
+                                promise.resolve(msg);
+                            } else {
+                                promise.resolve(value);
+                            }
+                        } catch (Exception e) {
+                            Log.e(REACT_CLASS, "Unparsable evaluate javascript result");
+                            promise.reject(e.toString());
+                        } finally {
+                            try {
+                                reader.close();
+                            } catch (Exception e) {
+                                // NOOP
+                                promise.reject(e.toString());
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void withRNWebView(final int viewId, final Promise promise, final RNWebViewHandler handler) {
+        UIManagerModule uiManager = getReactApplicationContext().getNativeModule(UIManagerModule.class);
+        uiManager.addUIBlock(new UIBlock() {
+            @Override
+            public void execute(NativeViewHierarchyManager nativeViewHierarchyManager) {
+                View view = nativeViewHierarchyManager.resolveView(viewId);
+                if (view instanceof RNWebView) {
+                    RNWebView myView = (RNWebView) view;
+                    handler.handle(myView);
+                }
+                else {
+                    promise.reject("RNWebView", "Unexpected view type");
+                }
+            }
+        });
+    }
 
 }
