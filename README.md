@@ -156,6 +156,7 @@ var WebViewAndroidExample = React.createClass({
           javaScriptEnabled={true}
           geolocationEnabled={false}
           builtInZoomControls={false}
+          debuggingEnabled={false} // Allows for inspection of WebView with Chrome
           injectedJavaScript={this.javascriptToInject()}
           onShouldStartLoadWithRequest={this.onShouldStartLoadWithRequest}
           onNavigationStateChange={this.onNavigationStateChange}

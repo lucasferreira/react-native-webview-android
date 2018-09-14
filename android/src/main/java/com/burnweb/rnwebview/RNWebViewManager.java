@@ -181,6 +181,11 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         view.setInjectedJavaScript(injectedJavaScript);
     }
 
+    @ReactProp(name = "debuggingEnabled", defaultBoolean = false)
+    public void setWebContentsDebuggingEnabled(RNWebView view, boolean debuggingEnabled) {
+        view.setWebContentsDebuggingEnabled(debuggingEnabled);
+    }
+
     @Override
     public @Nullable
     Map<String, Integer> getCommandsMap() {
