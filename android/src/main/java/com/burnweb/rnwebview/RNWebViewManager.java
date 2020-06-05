@@ -9,6 +9,9 @@ import android.os.Build;
 import android.view.ViewGroup.LayoutParams;
 import android.webkit.WebSettings;
 import android.webkit.CookieManager;
+import android.webkit.DownloadListener;
+import android.content.Intent;
+import android.net.Uri;
 
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.ReadableMapKeySetIterator;
@@ -48,7 +51,7 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
     }
 
     @Override
-    public RNWebView createViewInstance(ThemedReactContext context) {
+    public RNWebView createViewInstance(final ThemedReactContext context) {
         RNWebView rnwv = new RNWebView(this, context);
 
         // Fixes broken full-screen modals/galleries due to body
@@ -56,6 +59,18 @@ public class RNWebViewManager extends SimpleViewManager<RNWebView> {
         rnwv.setLayoutParams(
                 new LayoutParams(LayoutParams.MATCH_PARENT,
                         LayoutParams.MATCH_PARENT));
+                        
+        rnwv.setDownloadListener(new DownloadListener() {
+            public void onDownloadStart(String url, String userAgent,
+                                        String contentDisposition, String mimetype,
+                                        long contentLength) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+
+                i.setData(Uri.parse(url));
+                context.startActivity(i);
+            }
+        });
+
         CookieManager.getInstance().setAcceptCookie(true); // add default cookie support
         CookieManager.getInstance().setAcceptFileSchemeCookies(true); // add default cookie support
 
